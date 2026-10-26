@@ -10,9 +10,13 @@ Vectora turns abstract mathematics into experiments: edit matrices, follow elimi
 - **Vector Space** — interactive 2D vectors, magnitude, dot product, angle, projection, and a live coordinate-plane diagram.
 - **Transformations** — edit a 2 × 2 matrix and see it act on a rectangle and coordinate grid; inspect basis vectors and determinant/area scaling. Includes rotation, shear, reflection, and stretch presets.
 - **Decomposition Lab** — calculate real eigenvalues/eigenvectors, QR factorisation, singular values and SVD factors, and least-squares line fitting with editable observations.
-- **Applications** — a separate learning outline connecting linear algebra to ML, graphics, and robotics.
+- **Applications** — interactive PCA, least-squares regression, computer graphics transforms, and robotics pose/frame demos powered by FastAPI.
 
 Each module has its own route; this is not a single long scrolling page. Use the **DARK / LIGHT** control in the top navigation to switch themes. The preference is saved in the browser.
+
+## Numerical backend
+
+Vectora uses the companion [NumPy Matrix Operations API](https://github.com/souma888/numpy-matrix-operations) for validated Python computations. Configure `VITE_MATRIX_API_URL` to use another API base (defaults to `https://numpy-matrix-api.onrender.com`). Endpoints include `/health`, `/api/operate`, `/api/pca`, `/api/regression`, and `/api/transform`. Inputs are checked for dimensions, finite values, and operation-specific preconditions; invalid requests return HTTP 422. API docs are available at `/docs`.
 
 ## Numerical scope
 
