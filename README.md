@@ -1,51 +1,73 @@
 # Vectora
 
-**A visual workspace for linear algebra, numerical methods, and geometric intuition.**
+**An interactive field guide to linear algebra.**
 
-Vectora is an interactive learning environment in progress. It is designed to make abstract mathematical ideas tangible through manipulable matrices, live visualizations, guided experiments, and practical connections to machine learning and robotics.
+Vectora turns abstract mathematical ideas into experiments: edit matrices, follow elimination, explore geometry, and connect the math to machine learning and robotics.
 
-## Product direction
+## The experience
 
-- **Matrix Lab** — edit matrices and explore arithmetic, determinants, inverses, rank, and systems of equations.
-- **Vector Space** — work with vectors, projections, dot products, and linear combinations.
-- **Transformations** — see how matrices move points, shapes, and coordinate frames.
-- **Decomposition Lab** — build intuition for eigenvalues, eigenvectors, QR, SVD, and least squares.
-- **Numerical Methods** — investigate stability, conditioning, approximation, and numerical error.
-- **Applications** — connect linear algebra to regression, PCA, graphics, and robotics.
+Vectora is designed as a multi-page learning environment rather than a single scrolling landing page.
 
-## Status
+- **Overview** — a visual introduction to the learning workspace.
+- **Matrix Lab** — editable matrices, dimension controls, arithmetic, transpose, determinant, inverse, reduced row-echelon form (RREF), row-operation traces, and linear-system classification.
+- **Vector Space** — a dedicated home for vectors, projections, dot products, span, and basis.
+- **Transformations** — a dedicated home for linear maps, shape transforms, and coordinate frames.
+- **Decomposition Lab** — a roadmap for eigenanalysis, QR, and SVD.
+- **Applications** — a roadmap connecting linear algebra to ML, graphics, and robotics.
 
-The initial frontend establishes the product identity, responsive landing experience, navigation, and a first interactive matrix workspace. Numerical features are staged in the roadmap; the current browser workspace is an educational frontend prototype and should not be treated as a verified numerical-computing engine yet.
+The latter learning pages currently provide designed module overviews and learning plans; Matrix Lab is the first interactive lab.
 
-## Tech direction
+## Matrix Lab
+
+- Edit entries in matrices A and B.
+- Add or remove rows and columns (up to 5 × 5).
+- Use addition, multiplication, transpose, determinant, and inverse.
+- Compute reduced row-echelon form and inspect pivot columns/rank.
+- Follow a row-operation trace.
+- Solve (Ax=b) and classify the result as unique, infinitely many solutions, or inconsistent.
+- Copy the result as JSON.
+- Calculation runs locally in the browser.
+
+Numerical routines are educational implementations using floating-point arithmetic and a tolerance. For safety-critical or high-precision work, use a mature numerical package such as NumPy/SciPy.
+
+## Tech stack
 
 - React + TypeScript + Vite
-- CSS design system with responsive layouts and accessible interaction states
-- Planned API: FastAPI + Pydantic
-- Numerical foundation: NumPy / SciPy, with selected from-scratch algorithms for teaching
-- Deployment target: Vercel
+- CSS design system with responsive layouts and keyboard focus states
+- Vitest for numerical regression tests
+- GitHub Actions for tests and production build
+- Vercel for deployment
 
-## Local development
+## Development
+
+Requires Node.js 20 or newer.
 
 ```bash
 npm install
 npm run dev
 ```
 
-Run a production build with `npm run build` and preview it with `npm run preview`.
+Run the regression suite and production build:
 
-## Documentation
+```bash
+npm test
+npm run build
+```
+
+## Project documentation
 
 - [Product roadmap](docs/ROADMAP.md)
 - [Architecture](docs/ARCHITECTURE.md)
+- [Product brief](docs/PRODUCT.md)
+- [Deployment](docs/DEPLOYMENT.md)
 - [Contributing](CONTRIBUTING.md)
 
-## Principles
+## Design principles
 
-1. Show the intuition, not only the answer.
-2. Make every result inspectable and reproducible.
-3. Separate educational explanations from numerical computation.
-4. Prefer accessible, responsive, keyboard-friendly interactions.
+1. Let people manipulate a mathematical object before reading a wall of theory.
+2. Show intermediate operations, not only final answers.
+3. Separate conceptual illustrations from numerical results.
+4. Keep each learning area on its own route.
 5. Keep Vectora as the learning application and the Matrix Operations library as a reusable computation package.
 
 ## License
