@@ -17,3 +17,8 @@ npm run preview
 ```
 
 The current frontend is static and does not require environment variables. If an API is added later, document its public base URL and CORS policy. Never put private credentials in a Vite client variable.
+
+
+## Numerical API
+
+The Applications page defaults to `https://numpy-matrix-api.onrender.com`. Set `VITE_MATRIX_API_URL` in Vercel if the backend has another base URL, then redeploy. Configure backend `CORS_ORIGINS` to include the exact production Vectora origin and local development origins. The API's default allowlist includes the current Vectora Vercel domain and localhost Vite port.
