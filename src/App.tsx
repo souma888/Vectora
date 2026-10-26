@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
-import { Activity, ArrowDownRight, ArrowRight, ArrowUpRight, Atom, BookOpen, Check, ChevronDown, Command, Compass, Copy, Github, Grid2X2, Layers3, Menu, MoveUpRight, Play, RotateCcw, Sparkles, WandSparkles, X } from 'lucide-react'
-import { add, determinant, inverse, multiply, shape, transpose, type Matrix } from './lib/math'
+import { Activity, ArrowDownRight, ArrowRight, ArrowUpRight, Atom, Check, Command, Compass, Copy, Github, Grid2X2, Layers3, Menu, MoveUpRight, Play, RotateCcw, Sparkles, WandSparkles, X } from 'lucide-react'
+import { add, determinant, inverse, multiply, transpose, type Matrix } from './lib/math'
 
 type Tool = 'multiply' | 'add' | 'transpose' | 'determinant' | 'inverse'
 
@@ -17,7 +17,7 @@ function MatrixGrid({ value, onChange, label, accent = false }: { value: Matrix;
     <div className="matrix-caption"><span>{label}</span><span>{value.length} × {value[0]?.length ?? 0}</span></div>
     <div className={`matrix-brackets ${accent ? 'matrix-accent' : ''}`}>
       <div className="matrix-cells" style={{ gridTemplateColumns: `repeat(${value[0].length}, minmax(32px, 1fr))` }}>
-        {value.flatMap((row, i) => row.map((n, j) => <input key={`${i}-${j}`} aria-label={`${label} row ${i + 1} column ${j + 1}`} className="matrix-cell" type="number" step="any" value={n} readOnly={!onChange} onChange={e => onChange?.(value.map((r, ri) => r.map((v, ci) => ri === i && ci === j ? Number(e.target.value) : v)))} />))}
+        {value.flatMap((row, i) => row.map((n, j) => <input key={`${i}-${j}`} aria-label={`${label} row ${i + 1} column ${j + 1}`} className="matrix-cell" type="number" step="any" value={fmt(n)} readOnly={!onChange} onChange={e => onChange?.(value.map((r, ri) => r.map((v, ci) => ri === i && ci === j ? Number(e.target.value) : v)))} />))}
       </div>
     </div>
   </div>
@@ -29,8 +29,7 @@ function App() {
   const [tool, setTool] = useState<Tool>('multiply')
   const [mobileMenu, setMobileMenu] = useState(false)
   const [notice, setNotice] = useState('')
-  const [showPlayground, setShowPlayground] = useState(false)
-
+  
   const result = useMemo(() => {
     try {
       if (tool === 'multiply') return multiply(matrixA, matrixB)
@@ -50,7 +49,7 @@ function App() {
   ]
 
   const reset = () => { setMatrixA(initialA); setMatrixB(initialB); setTool('multiply'); setNotice('Workspace reset to the starter example.') }
-  const scrollToLab = () => { setShowPlayground(true); document.getElementById('playground')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }
+  const scrollToLab = () => document.getElementById('playground')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 
   return <div className="site-shell">
     <div className="ambient ambient-one" /><div className="ambient ambient-two" />
