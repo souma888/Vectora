@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { add, conditionReport, determinant, inverse, lu, multiply, pca2, pseudoinverse, qr, rref, solveSystem, svd, vectorProjection } from './scientificMath'
+import { add, conditionReport, determinant, inverse, lu, multiply, pca2, pseudoinverse, qr, solveSystem, svd, vectorProjection } from './scientificMath'
 const close=(a:number,b:number,tol=1e-6)=>expect(Math.abs(a-b)).toBeLessThan(tol)
 describe('scientific matrix operations',()=>{
  it('multiplies compatible matrices and rejects dimensions',()=>{expect(multiply([[1,2],[3,4]],[[2],[1]])).toEqual([[4],[10]]);expect(()=>multiply([[1,2]],[[1,2]])).toThrow(/columns\(A\)/)})
