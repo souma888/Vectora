@@ -8,10 +8,10 @@ Vectora is a browser-based mathematical workbench. Instead of only returning an 
 
 ### Focused learning labs
 - **Matrix Lab** — editable matrix operations, dimension checks, determinant/inverse, RREF, elimination traces, and linear-system classification.
-- **Vector Space** — vector magnitude, dot product, angle, projection, and coordinate-plane geometry.
+- **Vector Space** — vector addition/subtraction, dot and 3D cross products, magnitude, angle, projection, and coordinate-plane geometry.
 - **Transformations** — interactive 2D linear maps, transformed grids and basis vectors, rotation/shear/reflection presets, and determinant/area interpretation.
 - **Decomposition Lab** — compact demonstrations of eigenanalysis, QR, SVD, singular values, and least-squares fitting.
-- **Applications** — NumPy-backed PCA, regression, computer-graphics transformations, and planar robotics pose experiments.
+- **Applications** — NumPy-backed PCA, regression, interactive SVD low-rank approximation, computer-graphics transformations, planar robotics poses, and 3D homogeneous rotation/translation/scaling.
 
 ### Scientific Studio — `/scientific-studio`
 A connected workbench with six detailed areas:
