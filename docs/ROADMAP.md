@@ -54,8 +54,8 @@ A visual, hands-on workspace where learners can manipulate mathematical objects,
 - [x] Planar homogeneous transforms and pose controls
 - [x] Transform composition and local-to-world point mapping
 - [x] Coordinate-frame and composition-order explanations
-- [ ] Full 3D 4×4 transforms and rotation representations
-- [ ] Forward kinematics for a configurable robot arm
+- [x] Full 3D 4×4 homogeneous transforms with roll/pitch/yaw, translation, scaling, and inverse round-trip
+- [ ] Quaternion rotation representations and forward kinematics for a configurable robot arm
 - [ ] Computer-vision camera projection module
 
 ## Phase 6 — Learning and reproducibility
