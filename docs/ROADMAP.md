@@ -23,15 +23,15 @@ A visual, hands-on workspace where learners can manipulate mathematical objects,
 - [ ] Extend numeric edge-case coverage and review tolerances
 
 ## Phase 2 — Vectors and transformations
-- [ ] Vector operations, dot products, norms, projection, and angle
+- [x] Interactive 2D vector operations, dot products, norms, projection, and angle
 - [ ] Interactive 2D coordinate plane with draggable vectors
-- [ ] Apply 2×2 transformations to points, grids, and shapes
-- [ ] Show basis vectors before and after transformation
+- [x] Apply 2×2 transformations to coordinate grids, basis vectors, and shapes
+- [x] Show basis vectors before and after transformation
 - [ ] Explain determinant as signed area scaling
 
 ## Phase 3 — Decomposition and numerical methods
-- [ ] Eigenvalues and eigenvectors with geometric interpretations
-- [ ] LU, QR, SVD, least squares, and pseudoinverse
+- [x] Real eigenvalues and eigenvectors for 2×2 matrices with numerical readouts
+- [x] QR, SVD/singular values, and least-squares line fitting (educational 2D scope)\n- [ ] LU, pseudoinverse, and general-size decomposition support
 - [ ] Conditioning, stability, residuals, and floating-point error
 - [ ] Compare algorithms and explain when assumptions fail
 
