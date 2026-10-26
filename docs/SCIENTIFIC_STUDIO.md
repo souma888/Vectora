@@ -16,7 +16,7 @@ The Scientific Studio is the extended hands-on workbench at `/scientific-studio`
 - LU factorization with row pivoting: (PA=LU).
 - QR via modified Gram–Schmidt for full-column-rank matrices.
 - SVD through eigendecomposition of (A^TA), with singular values and left/right factors.
-- Real eigenvalues/eigenvectors for 2×2 matrices.
+- Real eigenvalues/eigenvectors and a PDP⁻¹ diagonalization/reconstruction check for diagonalizable 2×2 matrices.
 - Moore–Penrose pseudoinverse, numerical rank, singular values, and a 2-norm condition estimate.
 - Explanations of tolerance, residuals, conditioning, and IEEE-754 floating-point limitations.
 
