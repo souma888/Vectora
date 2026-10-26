@@ -1,66 +1,87 @@
 # Vectora
 
-**An interactive field guide to linear algebra.**
+**An interactive field guide to linear algebra and scientific computing.**
 
-Vectora turns abstract mathematics into experiments: edit matrices, follow elimination, explore vector geometry, watch transformations act on shapes, and inspect the decompositions behind numerical methods.
+Vectora is a browser-based mathematical workbench. Instead of only returning an answer, it lets learners edit mathematical objects, inspect intermediate steps, visualize geometric effects, and connect linear algebra to data science, machine learning, and robotics.
 
-## Interactive modules
+## Product modules
 
-- **Matrix Lab** — matrix editing, arithmetic, transpose, determinant, inverse, RREF, row-operation traces, and linear-system classification.
-- **Vector Space** — interactive 2D vectors, magnitude, dot product, angle, projection, and a live coordinate-plane diagram.
-- **Transformations** — edit a 2 × 2 matrix and see it act on a rectangle and coordinate grid; inspect basis vectors and determinant/area scaling. Includes rotation, shear, reflection, and stretch presets.
-- **Decomposition Lab** — calculate real eigenvalues/eigenvectors, QR factorisation, singular values and SVD factors, and least-squares line fitting with editable observations.
-- **Applications** — interactive PCA, least-squares regression, computer graphics transforms, and robotics pose/frame demos powered by FastAPI.
+### Focused learning labs
+- **Matrix Lab** — editable matrix operations, dimension checks, determinant/inverse, RREF, elimination traces, and linear-system classification.
+- **Vector Space** — vector magnitude, dot product, angle, projection, and coordinate-plane geometry.
+- **Transformations** — interactive 2D linear maps, transformed grids and basis vectors, rotation/shear/reflection presets, and determinant/area interpretation.
+- **Decomposition Lab** — compact demonstrations of eigenanalysis, QR, SVD, singular values, and least-squares fitting.
+- **Applications** — NumPy-backed PCA, regression, computer-graphics transformations, and planar robotics pose experiments.
 
-Each module has its own route; this is not a single long scrolling page. Use the **DARK / LIGHT** control in the top navigation to switch themes. The preference is saved in the browser.
+### Scientific Studio — `/scientific-studio`
+A connected workbench with six detailed areas:
 
-## Numerical backend
+1. **Matrix and vector laboratory:** create/resize/edit A and B (up to 5×5), add/subtract/multiply, transpose, determinant, inverse, RREF, pseudoinverse, rank, trace, dot product, norms, projection, angle, and system classification (unique / infinite / inconsistent).
+2. **Decomposition and numerical analysis:** pivoted LU, QR, SVD/singular values, 2×2 real eigenpairs, pseudoinverse, numerical rank, condition estimate, row-operation trace, and guidance about tolerance, residuals, and floating-point limits.
+3. **Interactive geometry:** animate the effect of a 2×2 matrix on a shape and basis vectors; explore rotation, shear, reflection, collapse, determinant, rank, and area scaling.
+4. **Machine learning:** edit a 2D dataset; fit least-squares regression; inspect slope, intercept, R² and residual norm; explore PCA covariance, principal directions and explained variance; learn low-rank approximation and neural-network matrix operations.
+5. **Robotics and engineering:** edit planar pose and point parameters; inspect homogeneous transforms, transform composition, local-to-world point mapping, and coordinate-frame conventions.
+6. **Learning and reproducibility:** guided lessons, key equations, assumption checks, JSON experiment export, API documentation, and a companion Jupyter notebook.
 
-Vectora uses the companion [NumPy Matrix Operations API](https://github.com/souma888/numpy-matrix-operations) for validated Python computations. Configure `VITE_MATRIX_API_URL` to use another API base (defaults to `https://numpy-matrix-api.onrender.com`). Endpoints include `/health`, `/api/operate`, `/api/pca`, `/api/regression`, and `/api/transform`. Inputs are checked for dimensions, finite values, and operation-specific preconditions; invalid requests return HTTP 422. API docs are available at `/docs`.
+## Numerical scope and transparency
 
-## Numerical scope
+- Browser calculations use JavaScript IEEE-754 double precision.
+- Rank and singularity use tolerance-based decisions; near-zero cases can depend on scaling and tolerance.
+- The Scientific Studio is an educational implementation for small matrices. Its compact SVD uses a Jacobi eigensolver on (A^TA), QR uses modified Gram–Schmidt, and real eigenvector display is limited to 2×2 matrices. QR reports dependent-column failures.
+- The browser PCA module currently uses two features; regression is a straight-line fit; robotics demonstrates planar SE(2), not full 3D kinematics.
+- Use mature numerical libraries such as NumPy/SciPy for large, ill-conditioned, scientific, or safety-critical work. The dedicated FastAPI backend uses NumPy for the supported Applications endpoints.
 
-The Vector Space and Transformations labs work in 2D. The Decomposition Lab's eigenanalysis, QR, and SVD demonstrations are currently designed for real 2 × 2 matrices. Least squares fits an intercept and slope to four editable observations using the normal equations. These are compact educational implementations using floating-point arithmetic, not replacements for a mature numerical library. Ill-conditioned and larger problems should use NumPy/SciPy or another established numerical package.
+## Architecture
 
-## Tech stack
+- **Frontend:** React, TypeScript, Vite, CSS, Lucide React.
+- **Client-side math:** pure TypeScript routines in `src/lib/`, with Vitest tests.
+- **Numerical API:** FastAPI + Pydantic + NumPy in `backend/app/main.py`.
+- **Deployment:** Vercel frontend and a dedicated Render API service. The Vectora API is separate from the older `numpy-matrix-operations` service.
 
-- React + TypeScript + Vite
-- Responsive editorial design system with light and dark themes
-- Vitest regression tests for matrix and geometry routines
-- GitHub Actions for regression tests and production build
-- Vercel deployment target
+API base URL defaults to `https://vectora-wwp0.onrender.com`. Set `VITE_MATRIX_API_URL` at build time to use another service. Vite-prefixed variables are public; never place secrets in them.
 
-## Development
+## Run locally
 
 Requires Node.js 20 or newer.
 
 ```bash
 npm install
 npm run dev
-```
-
-Run tests and production build:
-
-```bash
 npm test
 npm run build
 ```
 
-## Documentation
+Open the local Vite URL and select **Studio** or visit `/scientific-studio`.
 
-- [Product roadmap](docs/ROADMAP.md)
+To run the API locally:
+
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+API docs are available at `/docs` when the backend is running.
+
+## Documentation and examples
+
+- [Scientific Studio guide](docs/SCIENTIFIC_STUDIO.md)
+- [Numerical API reference](docs/API_REFERENCE.md)
 - [Architecture](docs/ARCHITECTURE.md)
+- [Product roadmap](docs/ROADMAP.md)
 - [Product brief](docs/PRODUCT.md)
 - [Deployment](docs/DEPLOYMENT.md)
 - [Contributing](CONTRIBUTING.md)
+- [Jupyter walkthrough](examples/linear_algebra_walkthrough.ipynb)
 
 ## Design principles
 
-1. Let people manipulate mathematical objects before reading a wall of theory.
-2. Show intermediate operations, not only final answers.
-3. Keep every learning area on its own route.
-4. Explain numerical assumptions and limitations.
-5. Keep Vectora as the learning application and Matrix Operations as a reusable computation package.
+1. Let users manipulate mathematical objects before reading theory.
+2. Show intermediate operations and assumptions, not only final answers.
+3. Give every learning area its own focused route.
+4. Make dimension rules and numerical limitations visible.
+5. Keep educational implementations distinct from trusted production numerical libraries.
+6. Keep experiments reproducible through documented examples and exported inputs.
 
 ## License
 
