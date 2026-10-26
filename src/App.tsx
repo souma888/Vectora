@@ -1,4 +1,5 @@
-import { useMemo, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { VectorSpaceLab, TransformationsLab, DecompositionLab } from './Labs'
 import { Activity, ArrowDownRight, ArrowRight, ArrowUpRight, BookOpen, Check, CircleHelp, Copy, Github, Grid2X2, Layers3, Menu, RotateCcw, Sigma, X } from 'lucide-react'
 import { add, determinant, inverse, multiply, rref, solveLinearSystem, transpose, type Matrix } from './lib/math'
 
@@ -20,9 +21,9 @@ function useRoute() { return typeof window === 'undefined' ? '/' : window.locati
 function Brand() {
   return <a className="brand" href="/" aria-label="Vectora home"><span className="brand-mark"><i/><i/><i/><i/></span><span>vectora<span className="brand-period">.</span></span></a>
 }
-function Header({ active }: { active: string }) {
+function Header({ active, theme, onToggleTheme }: { active: string; theme: 'light' | 'dark'; onToggleTheme: () => void }) {
   const [open, setOpen] = useState(false)
-  return <header className="site-header"><div className="header-inner"><Brand/><nav className={open ? 'main-nav nav-open' : 'main-nav'} aria-label="Main navigation">{routes.map(route => <a key={route.href} className={active === route.href ? 'nav-active' : ''} href={route.href} onClick={() => setOpen(false)}><span>{route.number}</span>{route.label}</a>)}</nav><a className="header-github" href="https://github.com/souma888/Vectora" target="_blank" rel="noreferrer">Source <Github size={15}/></a><button className="menu-toggle" onClick={() => setOpen(!open)} aria-label={open ? 'Close navigation' : 'Open navigation'}>{open ? <X/> : <Menu/>}</button></div></header>
+  return <header className="site-header"><div className="header-inner"><Brand/><nav className={open ? 'main-nav nav-open' : 'main-nav'} aria-label="Main navigation">{routes.map(route => <a key={route.href} className={active === route.href ? 'nav-active' : ''} href={route.href} onClick={() => setOpen(false)}><span>{route.number}</span>{route.label}</a>)}</nav><button className="theme-toggle" onClick={onToggleTheme} aria-label={theme === "light" ? "Switch to dark theme" : "Switch to light theme"} title={theme === "light" ? "Switch to dark theme" : "Switch to light theme"}><span>{theme === "light" ? "DARK" : "LIGHT"}</span><span className="theme-toggle-icon">{theme === "light" ? "☾" : "☼"}</span></button><a className="header-github" href="https://github.com/souma888/Vectora" target="_blank" rel="noreferrer">Source <Github size={15}/></a><button className="menu-toggle" onClick={() => setOpen(!open)} aria-label={open ? 'Close navigation' : 'Open navigation'}>{open ? <X/> : <Menu/>}</button></div></header>
 }
 function Footer() {
   return <footer className="site-footer"><Brand/><span>Mathematics you can get your hands on.</span><span className="footer-right">BUILT TO EXPLORE · © VECTORa 2026</span></footer>
@@ -102,11 +103,16 @@ function ConceptPage({ path }: { path: string }) {
 function NotFound() { return <main className="not-found"><Eyebrow>404 / OFF THE GRID</Eyebrow><h1>This point isn't<br/><em>in the space.</em></h1><p>That page hasn't been mapped yet.</p><a href="/" className="solid-button">Return home <ArrowRight size={16}/></a></main> }
 export default function App() {
   const path = useRoute()
+  const [theme,setTheme] = useState<'light'|'dark'>(() => typeof window !== 'undefined' && window.localStorage.getItem('vectora-theme') === 'dark' ? 'dark' : 'light')
+  useEffect(() => { if (typeof window !== 'undefined') window.localStorage.setItem('vectora-theme',theme) },[theme])
   const active = path === '/' ? '/' : path
   let content
   if (path === '/') content = <Home/>
   else if (path === '/matrix-lab') content = <main className="matrix-page"><section className="page-heading"><div><Eyebrow>MATRIX LAB / INTERACTIVE WORKSPACE</Eyebrow><h1>Make the matrix<br/><em>make sense.</em></h1><p>Change entries, explore operations, and follow the elimination steps that turn a system into an answer.</p></div><div className="page-heading-aside"><span>01 / 07</span><strong>THE FIRST WORKING LAB</strong><p>Runs locally in your browser. No sign-in, no uploads, no server round-trip.</p></div></section><MatrixLab/></main>
+  else if (path === '/vector-space') content = <VectorSpaceLab/>
+  else if (path === '/transformations') content = <TransformationsLab/>
+  else if (path === '/decomposition-lab') content = <DecompositionLab/>
   else if (pageData[path]) content = <ConceptPage path={path}/>
   else content = <NotFound/>
-  return <div className="app-shell"><Header active={active}/>{content}<Footer/></div>
+  return <div className="app-shell" data-theme={theme}><Header active={active} theme={theme} onToggleTheme={() => setTheme(t => t === 'light' ? 'dark' : 'light')}/>{content}<Footer/></div>
 }
