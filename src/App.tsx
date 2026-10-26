@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, type ReactNode } from 'react'
 import { Activity, ArrowDownRight, ArrowRight, ArrowUpRight, BookOpen, Check, ChevronDown, CircleHelp, Copy, Github, Grid2X2, Layers3, Menu, MoveUpRight, RotateCcw, Sigma, Sparkles, X } from 'lucide-react'
 import { add, determinant, inverse, multiply, rref, solveLinearSystem, transpose, type Matrix } from './lib/math'
 
@@ -27,7 +27,7 @@ function Header({ active }: { active: string }) {
 function Footer() {
   return <footer className="site-footer"><Brand/><span>Mathematics you can get your hands on.</span><span className="footer-right">BUILT TO EXPLORE · © VECTORa 2026</span></footer>
 }
-function Eyebrow({ children }: { children: React.ReactNode }) { return <div className="eyebrow"><span className="eyebrow-square"/> {children}</div> }
+function Eyebrow({ children }: { children: ReactNode }) { return <div className="eyebrow"><span className="eyebrow-square"/> {children}</div> }
 function MatrixGrid({ value, label, accent, onChange, compact = false }: { value: Matrix; label: string; accent?: boolean; onChange?: (matrix: Matrix) => void; compact?: boolean }) {
   return <div className={compact ? 'matrix-panel compact-matrix' : 'matrix-panel'}>
     <div className="matrix-panel-head"><strong>{label}</strong><span>{value.length} × {value[0]?.length ?? 0}</span></div>
