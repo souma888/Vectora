@@ -203,3 +203,85 @@
 .studio-least-squares>strong{display:block;font:15px var(--mono);color:var(--blue);overflow-wrap:anywhere;margin:10px 0}
 .studio-least-squares>p{font-size:10px;line-height:1.8;color:var(--muted);overflow-wrap:anywhere}
 .studio-muted-small{font:9px var(--mono)!important}
+
+/* Vectora visual consistency pass — legibility, responsive plots, and accessible contrast */
+:root{--body-size:15px}
+body{font-size:15px;line-height:1.65;overflow-x:hidden}
+p{line-height:1.75}
+.eyebrow,.panel-topline,.board-top,.board-bottom,.art-coordinate-label,.concept-art-bottom{font-size:10px;letter-spacing:1px}
+.main-nav a{font-size:12px}
+.main-nav a>span{font-size:10px}
+.header-github,.theme-toggle{font-size:11px}
+.site-footer{gap:18px;flex-wrap:wrap}
+.footer-links{display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:12px}
+.footer-links a{border-bottom:1px solid var(--line);padding-bottom:3px}
+.footer-links a:hover{color:var(--blue);border-color:var(--blue)}
+.footer-right{font-size:10px}
+.interactive-page,.matrix-page,.concept-page,.home-main,.info-page{min-width:0;max-width:100%;overflow-wrap:anywhere}
+.interactive-workspace,.application-workspace,.transform-workspace{width:100%;min-width:0;grid-template-columns:minmax(0,1.4fr) minmax(260px,.8fr);align-items:stretch}
+.visual-panel,.control-panel,.application-visual,.application-controls{min-width:0;max-width:100%}
+.coordinate-plane,.application-plot,.studio-plot{display:block;width:100%;max-width:100%;height:auto;min-width:0}
+.panel-topline{font-size:10px;line-height:1.5}
+.plot-legend,.application-legend{font:11px var(--mono);line-height:1.6;gap:12px}
+.vector-control-title strong{font-size:12px}
+.vector-control-title span{font-size:12px}
+.vector-controls label{font-size:11px;grid-template-columns:18px minmax(0,1fr) 40px;gap:8px}
+.concept-callout>span,.transform-readout>span,.metric-card>span{font-size:10px}
+.concept-callout p,.transform-readout p,.metric-card p,.explain-strip p,.mini-note,.decomp-summary p,.lab-footnote{font-size:12px;line-height:1.8}
+.metric-card{min-width:0}
+.metric-card strong{font-size:clamp(21px,2.3vw,30px)}
+.transform-matrix label,.data-editors label{font-size:10px}
+.transform-matrix input,.data-editors input{font-size:13px}
+.check-control{font-size:12px}
+.preset-row button,.text-button{font-size:11px}
+.decomp-tab strong{font-size:12px}
+.decomp-tab span,.eigen-pairs article>span,.factor-pair>div>span{font-size:10px}
+.eigen-pairs article>div,.eigen-pairs article>small,.singular-bars>div{font-size:11px}
+.least-result span{font-size:9px}
+.studio-export-card{background:#202a3a!important;color:#fbfaf6!important;gap:15px;min-width:0}
+.studio-export-card h3{color:#fbfaf6!important;font-size:clamp(26px,2.5vw,34px);line-height:1.2}
+.studio-export-card>p{color:#e1e6ed!important;font-size:13px;line-height:1.85;max-width:62ch}
+.studio-export-card .studio-kicker{color:#c6d4ec!important;font-size:10px;letter-spacing:1.2px}
+.studio-export-card>a{color:#e1e6ed!important;font-size:12px;line-height:1.5}
+.studio-export-card>a:hover{color:#fff!important}
+.studio-export-note{color:#e1e6ed!important;font-size:11px;line-height:1.7;gap:10px}
+.studio-export-note svg{color:#a8c0ff!important}
+.studio-primary,.studio-secondary,.solid-button,.outline-button{font-size:12px;min-height:44px;line-height:1.35}
+.studio-kicker,.studio-result-label{font-size:10px!important;letter-spacing:1px;line-height:1.6}
+.studio-explanation,.studio-muted-small,.studio-lesson-body p,.studio-robot-point p{font-size:12px!important;line-height:1.8}
+.studio-vector-inputs small{font-size:10px}
+.studio-vector-inputs input{font-size:13px}
+.studio-vector-metrics span,.studio-metric-strip .studio-stat>span{font-size:10px}
+.studio-vector-metrics b{font-size:12px}
+.studio-range{font-size:12px!important}
+.studio-range output{font-size:12px!important}
+.studio-3d-heading p{font-size:13px;line-height:1.8}
+.studio-3d-controls>.studio-kicker{font-size:10px}
+.studio-heatmap-legend,.studio-heatmap-legend small{font-size:10px}
+.studio-least-squares>p{font-size:12px;line-height:1.8}
+.info-page{width:min(1120px,100%);margin:0 auto;padding:clamp(34px,7vw,90px) clamp(20px,5vw,72px) 90px;flex:1}
+.info-page>h1{font:400 clamp(40px,7vw,82px)/1.05 var(--serif);letter-spacing:-1.8px;margin:25px 0}
+.info-page>h1 em{color:var(--blue);font-weight:400}
+.info-lead{font-size:clamp(16px,2vw,20px);line-height:1.85;color:var(--muted);max-width:760px;margin:0 0 38px}
+.info-card-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--ink);border-left:1px solid var(--ink);margin:30px 0}
+.info-card-grid article{padding:clamp(16px,2.5vw,28px);background:var(--white);border-right:1px solid var(--ink);border-bottom:1px solid var(--ink);min-width:0}
+.info-card-grid article>span{font:10px var(--mono);letter-spacing:.7px;color:var(--blue)}
+.info-card-grid h2,.settings-panel h2{font:400 clamp(20px,2.3vw,27px) var(--serif);margin:17px 0 9px}
+.info-card-grid p,.settings-panel p{font-size:14px;line-height:1.8;color:var(--muted);margin:0}
+.info-card-grid a{display:inline-block;margin-top:18px;font-size:13px;color:var(--blue);border-bottom:1px solid var(--blue);padding-bottom:3px}
+.info-note{padding:16px 18px;background:color-mix(in srgb,var(--blue) 8%,var(--white));border-left:3px solid var(--blue);font-size:13px;line-height:1.8;color:var(--muted);margin:24px 0}
+.settings-panel{border-top:1px solid var(--ink);max-width:900px}
+.settings-panel>div:not(.info-note){display:flex;align-items:center;justify-content:space-between;gap:24px;padding:24px 0;border-bottom:1px solid var(--line)}
+.settings-panel h2{margin:0 0 7px}
+.settings-panel>div>div{max-width:600px}
+.settings-state{font:10px var(--mono);color:var(--blue);white-space:nowrap}
+.outline-button{padding:11px 16px;border:1px solid var(--ink);background:transparent;color:var(--ink);white-space:nowrap}
+.outline-button:hover{background:var(--ink);color:var(--paper)}
+.app-shell[data-theme=dark] .info-card-grid article{background:var(--white)}
+.app-shell[data-theme=dark] .info-note{background:#202d3a;color:#d5dee7}
+.app-shell[data-theme=dark] .studio-export-card{background:#202a3a!important;color:#fbfaf6!important}
+.app-shell[data-theme=dark] .studio-export-card h3{color:#fbfaf6!important}
+.app-shell[data-theme=dark] .studio-export-card>p,.app-shell[data-theme=dark] .studio-export-card>a,.app-shell[data-theme=dark] .studio-export-note{color:#e1e6ed!important}
+@media(max-width:1100px){.interactive-workspace,.application-workspace,.transform-workspace{grid-template-columns:minmax(0,1fr)}.control-panel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}.control-panel>.panel-topline,.control-panel>.concept-callout{grid-column:1/-1}.control-panel>.vector-controls{min-width:0}.interactive-page{padding-left:clamp(18px,4vw,40px);padding-right:clamp(18px,4vw,40px)}}
+@media(max-width:720px){.info-card-grid{grid-template-columns:1fr}.settings-panel>div:not(.info-note){align-items:flex-start;flex-direction:column;gap:14px}.settings-state{white-space:normal}.site-footer{align-items:flex-start}.footer-links{width:100%}.control-panel{display:flex}.info-page>h1{letter-spacing:-1px}}
+@media(max-width:480px){body{font-size:14px}.interactive-page{padding-left:14px;padding-right:14px}.panel-topline{font-size:9px}.plot-legend,.application-legend{font-size:10px}.info-page{padding:36px 18px 60px}.info-page>h1{font-size:42px}.studio-export-card{padding:20px}.studio-export-card>p{font-size:13px}.metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.metric-card>span{font-size:9px}.vector-controls label{font-size:11px}}
