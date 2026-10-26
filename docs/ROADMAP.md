@@ -8,17 +8,17 @@ A visual, hands-on workspace where learners can manipulate mathematical objects,
 
 ## Phase 0 — Foundation
 - [x] Establish React + TypeScript + Vite project
-- [x] Create responsive brand and landing experience
+- [x] Create responsive brand and landing experience\n- [x] Separate major learning areas into dedicated routes
 - [x] Add a first client-side matrix playground
 - [x] Document architecture, principles, and deployment
-- [ ] Add automated tests and accessibility review
+- [ ] Complete manual accessibility review
 
 ## Phase 1 — Matrix Lab
-- [ ] Matrix editor with dimension controls and cell validation
-- [ ] Arithmetic, transpose, determinant, inverse, rank, and trace
-- [ ] Step-by-step row reduction and linear-system solving
+- [x] Matrix editor with dimension controls and cell validation
+- [x] Addition, multiplication, transpose, determinant, and inverse
+- [x] Step-by-step row reduction and linear-system classification/solving
 - [ ] Explain domain constraints and numerical limitations
-- [ ] Unit tests for calculation functions
+- [x] Automated regression tests for arithmetic, RREF, and linear systems\n- [ ] Extend numeric edge-case coverage and review tolerances
 
 ## Phase 2 — Vectors and transformations
 - [ ] Vector operations, dot products, norms, projection, and angle
@@ -50,7 +50,7 @@ A visual, hands-on workspace where learners can manipulate mathematical objects,
 - [ ] FastAPI + Pydantic service for heavier computations
 - [ ] Reuse the separate Matrix Operations package where appropriate
 - [ ] Stable request/response schemas and API tests
-- [ ] CI for linting, tests, and production build
+- [x] CI for tests and production build\n- [ ] Add a dedicated lint rule set and accessibility audit
 - [ ] Performance, keyboard, screen-reader, mobile, and security audits
 
 ## Initial success criteria
