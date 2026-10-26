@@ -8,7 +8,7 @@ The Scientific Studio is the extended hands-on workbench at `/scientific-studio`
 - Editable A and B matrices with row/column resizing (1–5 dimensions per axis).
 - Addition, subtraction, multiplication, transpose, determinant, inverse, RREF, pseudoinverse, rank, trace, and a signed-magnitude matrix heatmap.
 - Vector addition/subtraction, dot product, 3D cross product, Euclidean norm, angle, and projection.
-- Linear system classification: unique solution, infinitely many solutions, or inconsistency.
+- Linear system classification: unique solution, infinitely many solutions, or inconsistency; a separate pseudoinverse-based least-squares fit reports fitted values, residuals, residual norm, and numerical rank.
 - Dimension/precondition errors and a row-operation trace for RREF.
 - Presets for identity, rank-deficient, and pivoting examples.
 
