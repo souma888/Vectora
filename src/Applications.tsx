@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react'
 
 type Tab = 'pca' | 'regression' | 'graphics' | 'robotics'
 type Result = { method:string; [key:string]:any }
-const API = (import.meta.env.VITE_MATRIX_API_URL || 'https://numpy-matrix-api.onrender.com').replace(/\/$/,'')
+const API = (import.meta.env.VITE_MATRIX_API_URL || 'https://vectora-numerical-api.onrender.com').replace(/\/$/,'')
 const data = [[1,1.2],[1.5,1.7],[2,1.8],[2.5,2.7],[3,2.8],[3.5,3.4],[4,4.1],[4.5,4.2]]
 const xs = [0,1,2,3,4,5], ys = [1.1,2,2.4,3.8,4.1,5.2]
 const shape = [[-1,-1],[1,-1],[1,1],[-1,1],[-1,-1]]
