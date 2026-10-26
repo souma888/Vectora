@@ -1,10 +1,9 @@
-import { useMemo, useState } from 'react'
-import { ArrowRight, RotateCcw } from 'lucide-react'
-import { addVec, apply2, dot, eigen2, leastSquares2, norm, project, qr2, scaleVec, svd2, type Vec2 } from './lib/geometry'
+import { useMemo, useState, type ReactNode } from 'react'
+import { apply2, dot, eigen2, leastSquares2, norm, project, qr2, svd2, type Vec2 } from './lib/geometry'
 import type { Matrix } from './lib/math'
 
 const fmt = (n: number) => Math.abs(n) < 1e-8 ? '0' : Number(n.toFixed(3)).toString()
-function Eyebrow({ children }: { children: React.ReactNode }) { return <div className="eyebrow"><span className="eyebrow-square"/>{children}</div> }
+function Eyebrow({ children }: { children: ReactNode }) { return <div className="eyebrow"><span className="eyebrow-square"/>{children}</div> }
 function Heading({ eyebrow, title, accent, description, num, note }: { eyebrow:string; title:string; accent:string; description:string; num:string; note:string }) {
   return <section className="page-heading"><div><Eyebrow>{eyebrow}</Eyebrow><h1>{title}<br/><em>{accent}</em></h1><p>{description}</p></div><div className="page-heading-aside"><span>{num} / LIVE LAB</span><strong>{note}</strong><p>Change the inputs. The visuals and numerical results update as you explore.</p></div></section>
 }
