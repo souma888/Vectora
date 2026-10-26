@@ -26,7 +26,7 @@ A visual, hands-on workspace where learners can manipulate mathematical objects,
 - [x] Pivoted LU factorization
 - [x] QR factorization for full-column-rank educational examples
 - [x] SVD / singular values and pseudoinverse
-- [x] Real eigenpairs for 2×2 matrices
+- [x] Real eigenpairs and PDP⁻¹ diagonalization check for 2×2 matrices
 - [x] Numerical rank and condition-number estimate
 - [x] Explain tolerance, residuals, conditioning and floating-point limits
 - [x] Vitest regression tests for numerical routines
