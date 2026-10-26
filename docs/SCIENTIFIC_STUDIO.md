@@ -32,6 +32,7 @@ This is an educational implementation. It is not a replacement for LAPACK/NumPy/
 - Editable JSON dataset of 2D observations.
 - Least-squares line fit with intercept, slope, (R^2), and residual norm.
 - Two-dimensional PCA with centered data, covariance matrix, principal directions, projected observations, and explained-variance ratios.
+- Interactive SVD rank-k reconstruction with a slider and Frobenius reconstruction error.
 - Guided concepts for low-rank approximation and matrix operations in dense neural-network layers.
 - Dataset presets for correlated, negative, and nonlinear trends.
 
