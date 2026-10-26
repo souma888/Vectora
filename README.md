@@ -16,7 +16,7 @@ Vectora is a browser-based mathematical workbench. Instead of only returning an 
 ### Scientific Studio — `/scientific-studio`
 A connected workbench with six detailed areas:
 
-1. **Matrix and vector laboratory:** create/resize/edit A and B (up to 5×5), add/subtract/multiply, transpose, determinant, inverse, RREF, pseudoinverse, rank, trace, dot product, norms, projection, angle, and system classification (unique / infinite / inconsistent).
+1. **Matrix and vector laboratory:** create/resize/edit A and B (up to 5×5), add/subtract/multiply, transpose, determinant, inverse, RREF, pseudoinverse, rank, trace, dot product, norms, projection, angle, and system classification (unique / infinite / inconsistent), least-squares fitting with residual diagnostics, and signed matrix heatmaps.
 2. **Decomposition and numerical analysis:** pivoted LU, QR, SVD/singular values, 2×2 real eigenpairs, pseudoinverse, numerical rank, condition estimate, row-operation trace, and guidance about tolerance, residuals, and floating-point limits.
 3. **Interactive geometry:** animate the effect of a 2×2 matrix on a shape and basis vectors; explore rotation, shear, reflection, collapse, determinant, rank, and area scaling.
 4. **Machine learning:** edit a 2D dataset; fit least-squares regression; inspect slope, intercept, R² and residual norm; explore PCA covariance, principal directions and explained variance; learn low-rank approximation and neural-network matrix operations.
