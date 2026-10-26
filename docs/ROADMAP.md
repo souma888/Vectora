@@ -45,7 +45,7 @@ A visual, hands-on workspace where learners can manipulate mathematical objects,
 - [x] Editable two-feature dataset
 - [x] Least-squares line fit with slope, intercept, R² and residual norm
 - [x] Two-feature PCA with covariance, principal directions and explained variance
-- [x] Guided low-rank approximation and dense-layer explanations
+- [x] Interactive SVD rank-k approximation with reconstruction-error metric and dense-layer explanations
 - [ ] CSV upload, missing-value handling and feature standardization
 - [ ] Multi-feature PCA, model comparison and train/test split
 - [ ] Interactive gradient-descent animation
