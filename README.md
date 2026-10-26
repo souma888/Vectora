@@ -28,7 +28,7 @@ A connected workbench with six detailed areas:
 - Browser calculations use JavaScript IEEE-754 double precision.
 - Rank and singularity use tolerance-based decisions; near-zero cases can depend on scaling and tolerance.
 - The Scientific Studio is an educational implementation for small matrices. Its compact SVD uses a Jacobi eigensolver on (A^TA), QR uses modified Gram–Schmidt, and real eigenvector display is limited to 2×2 matrices. QR reports dependent-column failures.
-- The browser PCA module currently uses two features; regression is a straight-line fit; robotics demonstrates planar SE(2), not full 3D kinematics.
+- The browser PCA module currently uses two features; regression is a straight-line fit; robotics includes SE(2) and 4×4 3D homogeneous transforms but not full robot-arm kinematics.
 - Use mature numerical libraries such as NumPy/SciPy for large, ill-conditioned, scientific, or safety-critical work. The dedicated FastAPI backend uses NumPy for the supported Applications endpoints.
 
 ## Architecture
