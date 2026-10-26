@@ -23,6 +23,8 @@ origins = [s.strip() for s in os.getenv("CORS_ORIGINS", default_origins).split("
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
+    # Vercel serves production aliases and deployment-specific hostnames; allow this public frontend hosting domain family too.
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=False,
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["Content-Type", "Authorization"],
