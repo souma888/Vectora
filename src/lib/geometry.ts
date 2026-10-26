@@ -28,12 +28,15 @@ export function eigen2(matrix: Matrix): EigenPair[] {
   if (discriminant < -EPS) return []
   const root = Math.sqrt(Math.max(0, discriminant))
   const values = [(trace + root)/2, (trace - root)/2]
-  return values.map(value => {
-    let vector: Vec2
-    if (Math.abs(b) > EPS || Math.abs(value-a) > EPS) vector = Math.abs(b) > Math.abs(c) ? [b, value-a] : [value-d, c]
-    else vector = [1, 0]
-    let length = norm(vector)
-    if (length < EPS) { vector = [0, 1]; length = 1 }
+  return values.map((value,index) => {
+    let vector: Vec2 = [b, value-a]
+    const alternative: Vec2 = [value-d, c]
+    if (norm(alternative) > norm(vector)) vector = alternative
+    if (norm(vector) < EPS) {
+      if (Math.abs(b) < EPS && Math.abs(c) < EPS) vector = index === 0 ? [1,0] : [0,1]
+      else vector = [1,0]
+    }
+    const length = norm(vector)
     return { value: clean(value), vector: [clean(vector[0]/length), clean(vector[1]/length)] as Vec2 }
   })
 }
