@@ -285,3 +285,16 @@ p{line-height:1.75}
 @media(max-width:1100px){.interactive-workspace,.application-workspace,.transform-workspace{grid-template-columns:minmax(0,1fr)}.control-panel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}.control-panel>.panel-topline,.control-panel>.concept-callout{grid-column:1/-1}.control-panel>.vector-controls{min-width:0}.interactive-page{padding-left:clamp(18px,4vw,40px);padding-right:clamp(18px,4vw,40px)}}
 @media(max-width:720px){.info-card-grid{grid-template-columns:1fr}.settings-panel>div:not(.info-note){align-items:flex-start;flex-direction:column;gap:14px}.settings-state{white-space:normal}.site-footer{align-items:flex-start}.footer-links{width:100%}.control-panel{display:flex}.info-page>h1{letter-spacing:-1px}}
 @media(max-width:480px){body{font-size:14px}.interactive-page{padding-left:14px;padding-right:14px}.panel-topline{font-size:9px}.plot-legend,.application-legend{font-size:10px}.info-page{padding:36px 18px 60px}.info-page>h1{font-size:42px}.studio-export-card{padding:20px}.studio-export-card>p{font-size:13px}.metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.metric-card>span{font-size:9px}.vector-controls label{font-size:11px}}
+
+
+/* Header utility destinations and contact cards */
+.main-nav{gap:clamp(8px,1.35vw,20px)}
+.main-nav a{font-size:11px}
+.main-nav a[href="/about"],.main-nav a[href="/contact"]{color:var(--ink);font-weight:600}
+.main-nav a[href="/contact"]{border-bottom-color:var(--blue)}
+.contact-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.contact-card-grid article{display:flex;flex-direction:column;align-items:flex-start;min-height:220px}
+.contact-card-grid article a{margin-top:14px;overflow-wrap:anywhere}
+.contact-card-grid article a+a{margin-top:10px}
+@media(max-width:1100px){.header-inner{gap:14px}.main-nav{gap:8px}.main-nav a{font-size:10px}.main-nav a>span{display:none}.header-github{padding:8px}}
+@media(max-width:800px){.main-nav a>span{display:inline;font-size:9px}.main-nav a[href="/about"],.main-nav a[href="/contact"]{font-size:13px}.contact-card-grid{grid-template-columns:1fr}}
