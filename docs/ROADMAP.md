@@ -17,7 +17,7 @@ A visual, hands-on workspace where learners can manipulate mathematical objects,
 - [x] Addition, subtraction, multiplication, transpose, determinant, inverse, rank and trace
 - [x] RREF with pivot and row-operation trace
 - [x] Unique / infinite / inconsistent linear-system classification
-- [x] Vector dot product, norms, angle and projection
+- [x] Vector addition/subtraction, dot and 3D cross products, norms, angle and projection
 - [x] Dimension checks and operation-specific error messages
 - [x] Pseudoinverse and example presets
 - [ ] General symbolic algebra and exact rational arithmetic
