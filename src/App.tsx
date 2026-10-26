@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { VectorSpaceLab, TransformationsLab, DecompositionLab } from './Labs'
+import { ApplicationsLab } from './Applications'
 import { Activity, ArrowDownRight, ArrowRight, ArrowUpRight, BookOpen, Check, CircleHelp, Copy, Github, Grid2X2, Layers3, Menu, RotateCcw, Sigma, X } from 'lucide-react'
 import { add, determinant, inverse, multiply, rref, solveLinearSystem, transpose, type Matrix } from './lib/math'
 
@@ -112,6 +113,7 @@ export default function App() {
   else if (path === '/vector-space') content = <VectorSpaceLab/>
   else if (path === '/transformations') content = <TransformationsLab/>
   else if (path === '/decomposition-lab') content = <DecompositionLab/>
+  else if (path === '/applications') content = <ApplicationsLab/>
   else if (pageData[path]) content = <ConceptPage path={path}/>
   else content = <NotFound/>
   return <div className="app-shell" data-theme={theme}><Header active={active} theme={theme} onToggleTheme={() => setTheme(t => t === 'light' ? 'dark' : 'light')}/>{content}<Footer/></div>
