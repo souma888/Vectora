@@ -19,7 +19,7 @@ A visual, hands-on workspace where learners can manipulate mathematical objects,
 - [x] Unique / infinite / inconsistent linear-system classification
 - [x] Vector addition/subtraction, dot and 3D cross products, norms, angle and projection
 - [x] Dimension checks and operation-specific error messages
-- [x] Pseudoinverse and example presets
+- [x] Pseudoinverse, least-squares solution/residual diagnostics, signed magnitude heatmap, and example presets
 - [ ] General symbolic algebra and exact rational arithmetic
 
 ## Phase 2 — Decomposition and numerical analysis
