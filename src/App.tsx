@@ -1,136 +1,112 @@
 import { useMemo, useState } from 'react'
-import { Activity, ArrowDownRight, ArrowRight, ArrowUpRight, Atom, Check, Command, Compass, Copy, Github, Grid2X2, Layers3, Menu, MoveUpRight, Play, RotateCcw, Sparkles, WandSparkles, X } from 'lucide-react'
-import { add, determinant, inverse, multiply, transpose, type Matrix } from './lib/math'
+import { Activity, ArrowDownRight, ArrowRight, ArrowUpRight, BookOpen, Check, ChevronDown, CircleHelp, Copy, Github, Grid2X2, Layers3, Menu, MoveUpRight, RotateCcw, Sigma, Sparkles, X } from 'lucide-react'
+import { add, determinant, inverse, multiply, rref, solveLinearSystem, transpose, type Matrix } from './lib/math'
 
-type Tool = 'multiply' | 'add' | 'transpose' | 'determinant' | 'inverse'
-
+type Tool = 'multiply' | 'add' | 'transpose' | 'determinant' | 'inverse' | 'rref' | 'solve'
 const initialA: Matrix = [[2, 1], [1, 3]]
 const initialB: Matrix = [[1, 2], [0, 1]]
+const initialRhs = [5, 4]
+const routes = [
+  { href: '/', label: 'Overview', number: '00' },
+  { href: '/matrix-lab', label: 'Matrix Lab', number: '01' },
+  { href: '/vector-space', label: 'Vector Space', number: '02' },
+  { href: '/transformations', label: 'Transformations', number: '03' },
+  { href: '/decomposition-lab', label: 'Decomposition Lab', number: '04' },
+  { href: '/applications', label: 'Applications', number: '05' },
+]
+function fmt(n: number) { if (Math.abs(n) < 1e-9) return '0'; return Number.isInteger(n) ? String(n) : Number(n.toFixed(4)).toString() }
+function useRoute() { return typeof window === 'undefined' ? '/' : window.location.pathname.replace(/\/$/, '') || '/' }
 
-function fmt(n: number) {
-  if (Math.abs(n) < 1e-9) return '0'
-  return Number.isInteger(n) ? String(n) : Number(n.toFixed(3)).toString()
+function Brand() {
+  return <a className="brand" href="/" aria-label="Vectora home"><span className="brand-mark"><i/><i/><i/><i/></span><span>vectora<span className="brand-period">.</span></span></a>
 }
-
-function MatrixGrid({ value, onChange, label, accent = false }: { value: Matrix; onChange?: (m: Matrix) => void; label: string; accent?: boolean }) {
-  return <div className="matrix-block">
-    <div className="matrix-caption"><span>{label}</span><span>{value.length} × {value[0]?.length ?? 0}</span></div>
-    <div className={`matrix-brackets ${accent ? 'matrix-accent' : ''}`}>
-      <div className="matrix-cells" style={{ gridTemplateColumns: `repeat(${value[0].length}, minmax(32px, 1fr))` }}>
-        {value.flatMap((row, i) => row.map((n, j) => <input key={`${i}-${j}`} aria-label={`${label} row ${i + 1} column ${j + 1}`} className="matrix-cell" type="number" step="any" value={fmt(n)} readOnly={!onChange} onChange={e => onChange?.(value.map((r, ri) => r.map((v, ci) => ri === i && ci === j ? Number(e.target.value) : v)))} />))}
-      </div>
-    </div>
+function Header({ active }: { active: string }) {
+  const [open, setOpen] = useState(false)
+  return <header className="site-header"><div className="header-inner"><Brand/><nav className={open ? 'main-nav nav-open' : 'main-nav'} aria-label="Main navigation">{routes.map(route => <a key={route.href} className={active === route.href ? 'nav-active' : ''} href={route.href} onClick={() => setOpen(false)}><span>{route.number}</span>{route.label}</a>)}</nav><a className="header-github" href="https://github.com/souma888/Vectora" target="_blank" rel="noreferrer">Source <Github size={15}/></a><button className="menu-toggle" onClick={() => setOpen(!open)} aria-label={open ? 'Close navigation' : 'Open navigation'}>{open ? <X/> : <Menu/>}</button></div></header>
+}
+function Footer() {
+  return <footer className="site-footer"><Brand/><span>Mathematics you can get your hands on.</span><span className="footer-right">BUILT TO EXPLORE · © VECTORa 2026</span></footer>
+}
+function Eyebrow({ children }: { children: React.ReactNode }) { return <div className="eyebrow"><span className="eyebrow-square"/> {children}</div> }
+function MatrixGrid({ value, label, accent, onChange, compact = false }: { value: Matrix; label: string; accent?: boolean; onChange?: (matrix: Matrix) => void; compact?: boolean }) {
+  return <div className={compact ? 'matrix-panel compact-matrix' : 'matrix-panel'}>
+    <div className="matrix-panel-head"><strong>{label}</strong><span>{value.length} × {value[0]?.length ?? 0}</span></div>
+    <div className={accent ? 'matrix-bracket accent-bracket' : 'matrix-bracket'}><div className="matrix-grid" style={{ gridTemplateColumns: `repeat(${value[0].length}, minmax(34px, 1fr))` }}>
+      {value.flatMap((row, i) => row.map((n, j) => <input key={`${i}-${j}`} aria-label={`${label} row ${i + 1} column ${j + 1}`} type="number" step="any" value={fmt(n)} readOnly={!onChange} onChange={event => onChange?.(value.map((r, ri) => r.map((v, ci) => ri === i && ci === j ? Number(event.target.value) : v)))} />))}
+    </div></div>
   </div>
 }
-
-function App() {
-  const [matrixA, setMatrixA] = useState<Matrix>(initialA)
-  const [matrixB, setMatrixB] = useState<Matrix>(initialB)
-  const [tool, setTool] = useState<Tool>('multiply')
-  const [mobileMenu, setMobileMenu] = useState(false)
-  const [notice, setNotice] = useState('')
-  
-  const result = useMemo(() => {
-    try {
-      if (tool === 'multiply') return multiply(matrixA, matrixB)
-      if (tool === 'add') return add(matrixA, matrixB)
-      if (tool === 'transpose') return transpose(matrixA)
-      if (tool === 'determinant') return [[determinant(matrixA)]]
-      return inverse(matrixA)
-    } catch { return null }
-  }, [matrixA, matrixB, tool])
-
-  const toolLabels: { id: Tool; label: string; symbol: string }[] = [
-    { id: 'multiply', label: 'Multiply', symbol: 'AB' },
-    { id: 'add', label: 'Add', symbol: 'A+B' },
-    { id: 'transpose', label: 'Transpose', symbol: 'Aᵀ' },
-    { id: 'determinant', label: 'Determinant', symbol: 'det' },
-    { id: 'inverse', label: 'Inverse', symbol: 'A⁻¹' },
+function resizeMatrix(matrix: Matrix, rows: number, cols: number): Matrix {
+  return Array.from({ length: rows }, (_, i) => Array.from({ length: cols }, (_, j) => matrix[i]?.[j] ?? Number(i === j)))
+}
+function MatrixEditor({ value, onChange, label }: { value: Matrix; onChange: (m: Matrix) => void; label: string }) {
+  const rows = value.length, cols = value[0]?.length ?? 0
+  return <div className="editor-card"><div className="editor-card-top"><span className="editor-label">{label}</span><span className="dim-chip">{rows} × {cols}</span></div><MatrixGrid value={value} label={label} accent={label === 'A'} onChange={onChange}/><div className="dimension-controls"><span>Dimensions</span><div><button aria-label={`Remove row from ${label}`} disabled={rows <= 1} onClick={() => onChange(resizeMatrix(value, rows - 1, cols))}>− row</button><button aria-label={`Add row to ${label}`} disabled={rows >= 5} onClick={() => onChange(resizeMatrix(value, rows + 1, cols))}>+ row</button><button aria-label={`Remove column from ${label}`} disabled={cols <= 1} onClick={() => onChange(resizeMatrix(value, rows, cols - 1))}>− col</button><button aria-label={`Add column to ${label}`} disabled={cols >= 5} onClick={() => onChange(resizeMatrix(value, rows, cols + 1))}>+ col</button></div></div></div>
+}
+function ResultMatrix({ value, label = 'RESULT' }: { value: Matrix; label?: string }) {
+  return <div className="result-card"><div className="result-head"><span className="result-pip"/>{label}<span className="live-tag">CALCULATED</span></div><MatrixGrid value={value} label={label} compact/></div>
+}
+function MatrixLab() {
+  const [a, setA] = useState<Matrix>(initialA), [b, setB] = useState<Matrix>(initialB)
+  const [rhs, setRhs] = useState<number[]>(initialRhs), [tool, setTool] = useState<Tool>('multiply'), [copied, setCopied] = useState(false)
+  const tools: { id: Tool; label: string; notation: string; description: string }[] = [
+    { id: 'multiply', label: 'Multiply', notation: 'AB', description: 'Compose two linear maps.' },
+    { id: 'add', label: 'Addition', notation: 'A + B', description: 'Add corresponding entries.' },
+    { id: 'transpose', label: 'Transpose', notation: 'Aᵀ', description: 'Swap rows and columns.' },
+    { id: 'determinant', label: 'Determinant', notation: 'det A', description: 'Measure signed area scale.' },
+    { id: 'inverse', label: 'Inverse', notation: 'A⁻¹', description: 'Undo an invertible map.' },
+    { id: 'rref', label: 'Row reduction', notation: 'RREF', description: 'Find pivots and rank.' },
+    { id: 'solve', label: 'Solve Ax = b', notation: 'Ax = b', description: 'Classify and solve a system.' },
   ]
-
-  const reset = () => { setMatrixA(initialA); setMatrixB(initialB); setTool('multiply'); setNotice('Workspace reset to the starter example.') }
-  const scrollToLab = () => document.getElementById('playground')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-
-  return <div className="site-shell">
-    <div className="ambient ambient-one" /><div className="ambient ambient-two" />
-    <header className="topbar">
-      <a className="brand" href="#top" aria-label="Vectora home"><span className="brand-mark"><span /><span /><span /><span /></span><span>vectora<span className="brand-period">.</span></span></a>
-      <nav className={mobileMenu ? 'nav-links nav-open' : 'nav-links'} aria-label="Main navigation">
-        <a href="#explore" onClick={() => setMobileMenu(false)}>Explore</a><a href="#playground" onClick={() => setMobileMenu(false)}>Workspace</a><a href="#roadmap" onClick={() => setMobileMenu(false)}>Learning paths</a>
-        <a className="nav-github" href="https://github.com/souma888/Vectora" target="_blank" rel="noreferrer"><Github size={15} /> GitHub <MoveUpRight size={13} /></a>
-      </nav>
-      <button className="mobile-toggle icon-button" aria-label={mobileMenu ? 'Close menu' : 'Open menu'} onClick={() => setMobileMenu(!mobileMenu)}>{mobileMenu ? <X size={20} /> : <Menu size={20} />}</button>
-      <button className="nav-cta" onClick={scrollToLab}>Open workspace <ArrowUpRight size={15} /></button>
-    </header>
-
-    <main id="top">
-      <section className="hero">
-        <div className="hero-copy">
-          <div className="eyebrow"><span className="status-dot" /> THE VISUAL MATHEMATICS WORKSPACE</div>
-          <h1>See the <span className="gradient-text">structure.</span><br />Feel the math.</h1>
-          <p className="hero-description">Linear algebra is more than symbols on a page. Explore the hidden geometry behind matrices, transformations, and the ideas powering modern AI.</p>
-          <div className="hero-actions"><button className="button-primary" onClick={scrollToLab}>Enter the workspace <ArrowRight size={17} /></button><a className="button-quiet" href="#explore"><span className="play-ring"><Play size={12} fill="currentColor" /></span> Explore the toolkit</a></div>
-          <div className="hero-meta"><div className="avatar-stack"><span>∑</span><span>∫</span><span>λ</span></div><span>Built for curious minds</span><i /> <span className="meta-mono">MATH · VISUALS · INTUITION</span></div>
-        </div>
-        <div className="hero-art" aria-label="Abstract visualization of a matrix transforming a coordinate grid">
-          <div className="art-label art-label-top"><span className="tiny-dot" /> TRANSFORMATION / 01</div>
-          <div className="art-orbit orbit-one" /><div className="art-orbit orbit-two" />
-          <svg className="transform-svg" viewBox="0 0 520 430" role="img" aria-label="A glowing coordinate grid with transformed vectors">
-            <defs><linearGradient id="plane" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#2558d8" stopOpacity=".85"/><stop offset="1" stopColor="#e45135" stopOpacity=".2"/></linearGradient><linearGradient id="vector" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stopColor="#2558d8"/><stop offset="1" stopColor="#e45135"/></linearGradient><filter id="glow"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-            <g transform="translate(260 212) rotate(-29) skewX(-12)" fill="none" stroke="#8c83b5" strokeOpacity=".3" strokeWidth="1">
-              {Array.from({length:13},(_,i)=><g key={i}><path d={`M ${(i-6)*23} -140 L ${(i-6)*23} 140`} /><path d={`M -145 ${(i-6)*23} L 145 ${(i-6)*23}`} /></g>)}
-            </g>
-            <g transform="translate(260 212) rotate(-29) skewX(-12)" fill="none" stroke="url(#plane)" strokeWidth="1.25">
-              {Array.from({length:9},(_,i)=><g key={i}><path d={`M ${(i-4)*28} -118 L ${(i-4)*28} 118`} /><path d={`M -112 ${(i-4)*28} L 112 ${(i-4)*28}`} /></g>)}
-            </g>
-            <g filter="url(#glow)" strokeLinecap="round" fill="none"><path d="M 260 212 L 394 132" stroke="#e45135" strokeWidth="2.5"/><path d="M 260 212 L 190 105" stroke="#2558d8" strokeWidth="2.5"/><path d="M 260 212 L 354 277" stroke="#2558d8" strokeWidth="1.5" strokeDasharray="4 7"/><path d="M 260 212 L 260 80" stroke="#7af0d9" strokeOpacity=".5" strokeDasharray="3 6"/></g>
-            <circle cx="260" cy="212" r="5" fill="#fff" filter="url(#glow)"/><circle cx="394" cy="132" r="4" fill="#e45135"/><circle cx="190" cy="105" r="4" fill="#2558d8"/>
-            <g fontFamily="DM Mono, monospace" fontSize="12" fill="#202a3a"><text x="401" y="126">v₂</text><text x="169" y="97">v₁</text><text x="272" y="230" fill="#5c6570">O</text><text x="345" y="299" fill="#5c6570" fontSize="10">T : ℝ² → ℝ²</text></g>
-            <g transform="translate(44 48)"><rect width="110" height="54" rx="8" fill="#fbfaf6" stroke="#202a3a"/><text x="13" y="19" fill="#2558d8" fontSize="9" fontFamily="DM Mono, monospace">MATRIX A</text><text x="13" y="40" fill="#202a3a" fontSize="14" fontFamily="DM Mono, monospace">[ 2  1 ]</text><text x="13" y="51" fill="#f4f0ff" fontSize="14" fontFamily="DM Mono, monospace">[ 1  3 ]</text></g>
-          </svg>
-          <div className="art-equation"><span className="equation-symbol">A</span><span>×</span><span className="equation-vector">v</span><span>=</span><span className="equation-result">Av</span><span className="equation-check"><Check size={12} /></span></div>
-          <div className="art-label art-label-bottom"><span>FIG. 001</span><span>LINEAR TRANSFORMATION</span><span className="art-coordinate">x: 2.0&nbsp; y: 3.0</span></div>
-        </div>
-        <div className="hero-bottomline"><span>01 / A NEW WAY TO LEARN</span><span className="bottom-center"><span /> THINK IN DIMENSIONS</span><a href="#explore">SCROLL TO EXPLORE <ArrowDownRight size={14} /></a></div>
-      </section>
-
-      <section className="ticker" aria-label="Topics"><div className="ticker-track"><span>LINEAR ALGEBRA</span><i>✳</i><span>GEOMETRY</span><i>✳</i><span>NUMERICAL METHODS</span><i>✳</i><span>MACHINE LEARNING</span><i>✳</i><span>ROBOTICS</span><i>✳</i><span>LINEAR ALGEBRA</span><i>✳</i><span>GEOMETRY</span><i>✳</i><span>NUMERICAL METHODS</span><i>✳</i><span>MACHINE LEARNING</span><i>✳</i></div></section>
-
-      <section className="section explore-section" id="explore">
-        <div className="section-heading"><div><div className="eyebrow"><span className="eyebrow-index">01</span> YOUR MATHEMATICAL PLAYGROUND</div><h2>From abstract to <span className="gradient-text">intuitive.</span></h2></div><p>Tools for the questions you can’t answer by memorizing a formula. Explore a concept, change a value, and see what happens.</p></div>
-        <div className="feature-grid">
-          <article className="feature-card feature-large"><div className="feature-top"><span className="feature-index">01 / CORE</span><span className="feature-icon"><Grid2X2 size={17} /></span></div><div className="feature-visual mini-matrix-visual"><div className="mini-matrix"><span>2</span><span>1</span><span>1</span><span>3</span></div><span className="visual-operator">×</span><div className="mini-matrix mini-matrix-muted"><span>1</span><span>2</span><span>0</span><span>1</span></div><ArrowRight size={20} className="visual-arrow" /><div className="mini-matrix mini-matrix-result"><span>2</span><span>5</span><span>1</span><span>5</span></div></div><h3>Matrix Lab</h3><p>Build matrices, perform operations, and inspect how the pieces fit together. Start with arithmetic; grow into systems and decompositions.</p><button className="text-link" onClick={scrollToLab}>Try the workspace <ArrowRight size={15} /></button></article>
-          <article className="feature-card"><div className="feature-top"><span className="feature-index">02 / GEOMETRY</span><span className="feature-icon"><Compass size={17} /></span></div><div className="feature-visual vector-visual"><svg viewBox="0 0 250 140" aria-label="Vector arrows on a coordinate plane"><g stroke="#363344" strokeWidth="1">{Array.from({length:11},(_,i)=><g key={i}><path d={`M ${15+i*22} 12 V128`} /><path d={`M 8 ${12+i*11.5} H242`} /></g>)}</g><path d="M125 119 L211 35" stroke="#7aefda" strokeWidth="2.4"/><path d="M125 119 L77 30" stroke="#ad99ff" strokeWidth="2.4"/><path d="M125 119 L205 93" stroke="#ad99ff" strokeWidth="1.4" strokeDasharray="4 5"/><circle cx="125" cy="119" r="3" fill="#fff"/><path d="M204 34 L211 35 L211 42" fill="none" stroke="#7aefda" strokeWidth="2"/><path d="M72 37 L77 30 L83 35" fill="none" stroke="#ad99ff" strokeWidth="2"/><text x="217" y="31" fill="#7aefda" fontSize="10">v</text><text x="59" y="25" fill="#ad99ff" fontSize="10">u</text></svg></div><h3>Vector Space</h3><p>Explore directions, projections, dot products, and the geometry of linear combinations.</p><a className="text-link muted-link" href="#roadmap">Coming into focus <ArrowRight size={15} /></a></article>
-          <article className="feature-card"><div className="feature-top"><span className="feature-index">03 / STRUCTURE</span><span className="feature-icon"><Layers3 size={17} /></span></div><div className="feature-visual decomposition-visual"><div className="decomp-equation"><span className="decomp-a">A</span><span>=</span><span className="decomp-u">U</span><span>·</span><span className="decomp-s">Σ</span><span>·</span><span className="decomp-v">Vᵀ</span></div><div className="decomp-lines"><span /><span /><span /><span /><span /></div></div><h3>Decomposition Lab</h3><p>Make eigenvectors, SVD, and matrix factorizations feel less like black boxes.</p><a className="text-link muted-link" href="#roadmap">On the roadmap <ArrowRight size={15} /></a></article>
-          <article className="feature-card"><div className="feature-top"><span className="feature-index">04 / APPLICATIONS</span><span className="feature-icon"><Atom size={17} /></span></div><div className="feature-visual application-visual"><div className="app-orbit app-orbit-one" /><div className="app-orbit app-orbit-two" /><div className="app-core">x</div><span className="app-node node-one">AI</span><span className="app-node node-two">3D</span><span className="app-node node-three">R²</span><span className="app-node node-four">ML</span></div><h3>Where math meets the world</h3><p>Connect the ideas to PCA, graphics, optimization, and robotics coordinate frames.</p><a className="text-link muted-link" href="#roadmap">Explore the vision <ArrowRight size={15} /></a></article>
-        </div>
-      </section>
-
-      <section className="workspace-section" id="playground">
-        <div className="workspace-glow" />
-        <div className="section-heading workspace-heading"><div><div className="eyebrow"><span className="eyebrow-index">02</span> INTERACTIVE PREVIEW</div><h2>Get your hands <span className="gradient-text">on the math.</span></h2></div><p>Change the numbers. Switch the operation. See the result update right here—no sign-up, no setup.</p></div>
-        <div className="workspace-window">
-          <div className="window-top"><div className="window-dots"><span /><span /><span /></div><div className="window-title"><Command size={12} /> VECTORa / MATRIX WORKSPACE</div><div className="window-status"><span /> LIVE PREVIEW</div></div>
-          <div className="workspace-body">
-            <aside className="workspace-sidebar"><div className="sidebar-label">WORKSPACE</div><div className="sidebar-item active"><Grid2X2 size={15} /> Matrix operations <span className="sidebar-count">01</span></div><div className="sidebar-item disabled"><Activity size={15} /> Vector geometry <span className="soon-dot" /></div><div className="sidebar-item disabled"><Layers3 size={15} /> Decompositions <span className="soon-dot" /></div><div className="sidebar-divider" /><div className="sidebar-label">EXPERIMENT</div><button className="sidebar-reset" onClick={reset}><RotateCcw size={13} /> Reset example</button><div className="sidebar-note"><Sparkles size={14} /><span>Change any cell to explore how a matrix operation behaves.</span></div></aside>
-            <div className="matrix-workspace"><div className="workspace-toolbar"><div><span className="workspace-kicker">MATRIX PLAYGROUND</span><h3>Operations <span>↗</span></h3></div><span className="dimension-badge">R<span>2×2</span></span></div>
-              <div className="operation-tabs" role="tablist" aria-label="Matrix operation">{toolLabels.map(item=><button key={item.id} role="tab" aria-selected={tool===item.id} className={tool===item.id?'operation-tab selected':'operation-tab'} onClick={()=>setTool(item.id)}><span>{item.symbol}</span><small>{item.label}</small></button>)}</div>
-              <div className="matrix-equation-row"><MatrixGrid value={matrixA} onChange={setMatrixA} label="MATRIX A" accent />{(tool==='multiply'||tool==='add')&&<><span className="equation-op">{tool==='multiply'?'×':'+'}</span><MatrixGrid value={matrixB} onChange={setMatrixB} label="MATRIX B" /></>}{tool==='transpose'&&<span className="equation-op">ᵀ</span>}{tool==='determinant'&&<span className="equation-op">det</span>}{tool==='inverse'&&<span className="equation-op">⁻¹</span>}<span className="equation-op equals">=</span><div className="result-wrap"><div className="result-label">RESULT <span className="live-pulse" /></div>{result ? <MatrixGrid value={result} label="MATRIX C" accent /> : <div className="result-error">Incompatible dimensions.<br/><small>Check the shape of each matrix.</small></div>}</div></div>
-              <div className="workspace-footer"><span><span className="green-dot" /> Result updates instantly</span><span className="footer-math">A ∈ ℝᵐˣⁿ</span><button onClick={()=>{const text=result?.map(row=>row.join('\t')).join('\n')??'No result'; void navigator.clipboard?.writeText(text).then(()=>setNotice('Result copied to clipboard.')).catch(()=>setNotice(text))}}><Copy size={13} /> Copy result</button></div>
-              {notice&&<div className="inline-notice" role="status">{notice}<button onClick={()=>setNotice('')} aria-label="Dismiss notice"><X size={13}/></button></div>}
-            </div>
-          </div>
-          <div className="window-bottom"><span><WandSparkles size={13} /> A SMALL STEP TOWARD BIGGER IDEAS</span><span>PROTOTYPE 0.1.0</span></div>
-        </div>
-        <p className="workspace-disclaimer">This is an early educational preview. It currently supports basic small-matrix operations; advanced solvers and numerical analysis are planned and will be independently tested.</p>
-      </section>
-
-      <section className="section philosophy-section" id="roadmap"><div className="philosophy-left"><div className="eyebrow"><span className="eyebrow-index">03</span> BUILT AROUND UNDERSTANDING</div><h2>Not just the <span className="gradient-text">what.</span><br/>The <em>why.</em></h2><p>Great mathematical tools do more than calculate. They help you build a mental model you can carry into the next problem.</p><a className="button-secondary" href="https://github.com/souma888/Vectora/blob/main/docs/ROADMAP.md" target="_blank" rel="noreferrer">See the roadmap <MoveUpRight size={15} /></a></div><div className="principles-list"><article><span className="principle-number">01</span><div><h3>Visual first</h3><p>Turn abstract operations into things you can see, manipulate, and reason about.</p></div><span className="principle-symbol">◉</span></article><article><span className="principle-number">02</span><div><h3>Understand every result</h3><p>Build intuition with definitions, assumptions, worked examples, and meaningful feedback.</p></div><span className="principle-symbol">∴</span></article><article><span className="principle-number">03</span><div><h3>Connect the disciplines</h3><p>Move from linear systems to machine learning, graphics, and robotics with confidence.</p></div><span className="principle-symbol">↗</span></article><article><span className="principle-number">04</span><div><h3>Learn by experimenting</h3><p>Change a value, challenge your intuition, and discover why the mathematics behaves as it does.</p></div><span className="principle-symbol">⌘</span></article></div></section>
-
-      <section className="closing-cta"><div className="closing-grid" /><div className="closing-content"><span className="closing-kicker"><Sparkles size={14} /> THE FIRST ITERATION STARTS HERE</span><h2>Make the invisible<br/><span className="gradient-text">understandable.</span></h2><p>Start with a matrix. Follow the geometry. See where the ideas take you.</p><button className="button-primary" onClick={scrollToLab}>Explore Vectora <ArrowRight size={17} /></button></div><div className="closing-symbol">V<span>.</span></div></section>
-    </main>
-    <footer className="footer"><a className="brand footer-brand" href="#top"><span className="brand-mark"><span /><span /><span /><span /></span><span>vectora<span className="brand-period">.</span></span></a><span className="footer-tagline">A workspace for mathematical intuition.</span><div className="footer-links"><a href="#explore">Explore</a><a href="#playground">Workspace</a><a href="https://github.com/souma888/Vectora" target="_blank" rel="noreferrer">GitHub <MoveUpRight size={12}/></a></div><span className="footer-copy">© 2026 VECTORa · MADE FOR THE CURIOUS</span></footer>
-  </div>
+  const computed = useMemo(() => {
+    try {
+      if (tool === 'multiply') return { matrix: multiply(a, b), error: '' }
+      if (tool === 'add') return { matrix: add(a, b), error: '' }
+      if (tool === 'transpose') return { matrix: transpose(a), error: '' }
+      if (tool === 'determinant') return { matrix: [[determinant(a)]], error: '' }
+      if (tool === 'inverse') return { matrix: inverse(a), error: '' }
+      if (tool === 'rref') return { matrix: rref(a).matrix, error: '' }
+      return { matrix: null, error: '' }
+    } catch (e) { return { matrix: null, error: e instanceof Error ? e.message : 'These dimensions are not compatible.' } }
+  }, [a, b, tool])
+  const reduction = useMemo(() => { try { return rref(a) } catch { return null } }, [a])
+  const solution = useMemo(() => { try { return solveLinearSystem(a, rhs.slice(0, a.length).concat(Array.from({length: Math.max(0, a.length-rhs.length)}, () => 0))) } catch { return null } }, [a, rhs])
+  const copy = async () => {
+    const text = tool === 'solve' ? JSON.stringify(solution, null, 2) : JSON.stringify(computed.matrix ?? reduction?.matrix, null, 2)
+    try { await navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1500) } catch { setCopied(false) }
+  }
+  const reset = () => { setA(initialA); setB(initialB); setRhs(initialRhs); setTool('multiply') }
+  return <div className="lab-layout"><aside className="lab-rail"><div className="rail-heading">WORKBENCH <span>01 / 07</span></div>{tools.map((item, i) => <button key={item.id} className={tool === item.id ? 'tool-choice chosen' : 'tool-choice'} onClick={() => setTool(item.id)}><span className="tool-number">0{i + 1}</span><span className="tool-name">{item.label}<small>{item.description}</small></span><span className="tool-notation">{item.notation}</span></button>)}<div className="rail-note"><CircleHelp size={16}/><p>Results use floating-point arithmetic. Small rounding differences are normal.</p></div></aside>
+    <div className="lab-main"><div className="lab-toolbar"><div><span className="mono-kicker">MATRIX WORKSPACE / LIVE</span><h2>{tools.find(t => t.id === tool)?.label}</h2></div><div className="toolbar-actions"><button className="subtle-button" onClick={reset}><RotateCcw size={14}/> Reset</button><button className="solid-button" onClick={copy}>{copied ? <Check size={14}/> : <Copy size={14}/>} {copied ? 'Copied' : 'Copy result'}</button></div></div>
+      <div className="editors-row"><MatrixEditor label="A" value={a} onChange={setA}/>{tool !== 'transpose' && tool !== 'determinant' && tool !== 'inverse' && tool !== 'rref' && tool !== 'solve' && <div className="editor-operator">{tool === 'multiply' ? '×' : '+'}</div>}{tool !== 'transpose' && tool !== 'determinant' && tool !== 'inverse' && tool !== 'rref' && tool !== 'solve' && <MatrixEditor label="B" value={b} onChange={setB}/>}</div>
+      {tool === 'solve' ? <section className="lab-output"><div className="output-title"><div><span className="mono-kicker">LINEAR SYSTEM</span><h3>Solve <i>Ax = b</i></h3></div><span className="output-badge">AUGMENTED MATRIX</span></div><p className="output-description">Edit the right-hand side vector. Coefficients come from matrix A.</p><div className="rhs-editor">{rhs.slice(0, a.length).concat(Array.from({length: Math.max(0,a.length-rhs.length)},()=>0)).map((v,i)=><label key={i}><span>b{i+1}</span><input type="number" value={fmt(v)} onChange={e=>setRhs(old=>{const next=old.slice();next[i]=Number(e.target.value);return next})}/></label>)}</div>{solution && <div className={solution.kind === 'none' ? 'solution-banner error-banner' : 'solution-banner'}><strong>{solution.kind === 'unique' ? 'Unique solution' : solution.kind === 'infinite' ? 'Infinitely many solutions' : 'No solution'}</strong><span>{solution.kind === 'unique' ? solution.values.map((v,i)=>`x${i+1} = ${fmt(v)}`).join('   ·   ') : solution.kind === 'infinite' ? `Free variables: ${solution.freeVariables.map(i=>`x${i+1}`).join(', ')}` : 'The equations are inconsistent.'}</span></div>}{solution && <div className="output-matrix-wrap"><ResultMatrix value={solution.rref} label="RREF [A | b]"/></div>}</section> :
+      <section className="lab-output"><div className="output-title"><div><span className="mono-kicker">RESULT / NUMERICAL OUTPUT</span><h3>{tool === 'rref' ? 'Reduced row-echelon form' : tool === 'determinant' ? 'Determinant value' : 'Your result'}</h3></div><span className="output-badge">LIVE UPDATE</span></div>{computed.error ? <div className="error-state"><strong>Operation not defined</strong><p>{computed.error}</p><span>Try adjusting the matrix dimensions or entries.</span></div> : computed.matrix && <div className="output-matrix-wrap"><ResultMatrix value={computed.matrix}/>{tool === 'rref' && <div className="rank-note">Rank(A) = {reduction?.pivotColumns.length} <span>·</span> Pivot columns: {reduction?.pivotColumns.length ? reduction.pivotColumns.map(c=>c+1).join(', ') : 'none'}</div>}</div>}</section>}
+      {tool === 'rref' && reduction && <section className="steps-section"><div className="output-title"><div><span className="mono-kicker">ROW OPERATIONS</span><h3>Reduction trace</h3></div><span className="output-badge">{reduction.steps.length} STATES</span></div><div className="step-list">{reduction.steps.map((step,i)=><article className="step-item" key={i}><div className="step-number">{String(i+1).padStart(2,'0')}</div><div className="step-content"><strong>{step.label}</strong><div className="step-matrix">{step.matrix.map((row,r)=><div key={r}>{row.map((n,c)=><span key={c}>{fmt(n)}</span>)}</div>)}</div></div></article>)}</div></section>}
+      {tool === 'solve' && solution && <section className="steps-section"><div className="output-title"><div><span className="mono-kicker">ELIMINATION TRACE</span><h3>How we got there</h3></div><span className="output-badge">{solution.steps.length} STATES</span></div><div className="step-list">{solution.steps.map((step,i)=><article className="step-item" key={i}><div className="step-number">{String(i+1).padStart(2,'0')}</div><div className="step-content"><strong>{step.label}</strong><div className="step-matrix">{step.matrix.map((row,r)=><div key={r}>{row.map((n,c)=><span key={c}>{fmt(n)}</span>)}</div>)}</div></div></article>)}</div></section>}
+      <div className="lab-footnote"><Activity size={14}/><span>Computed in your browser · no data is sent to a server</span><span className="footnote-right">EPSILON 1e−10</span></div>
+    </div></div>
 }
-
-export default App
+const pageData: Record<string,{num:string;eyebrow:string;title:string;accent:string;intro:string;status:string;features:{num:string;title:string;copy:string;symbol:string}[]}> = {
+  '/vector-space': {num:'02',eyebrow:'GEOMETRY / VECTOR SPACE',title:'Vectors have a direction. And a story.',accent:'direction.',intro:'Build intuition for magnitude, direction, dot products, projections, and linear combinations before the notation gets in the way.',status:'NEXT MODULE',features:[{num:'01',title:'Vector playground',copy:'Move vector tips and compare magnitude, direction, and component form.',symbol:'v⃗'},{num:'02',title:'Dot product',copy:'Explore how alignment changes the dot product from positive to zero to negative.',symbol:'u·v'},{num:'03',title:'Span & basis',copy:'See how independent vectors build a space and where they fall short.',symbol:'span'}]},
+  '/transformations': {num:'03',eyebrow:'GEOMETRY / TRANSFORMATIONS',title:'A matrix is a machine for space.',accent:'space.',intro:'See matrices as actions: rotate, stretch, reflect, shear, and change the coordinate frame beneath a shape.',status:'NEXT MODULE',features:[{num:'01',title:'Transform a grid',copy:'Compare the standard basis with its image under a matrix.',symbol:'T(x)'},{num:'02',title:'Shape laboratory',copy:'Explore rotations, reflections, shears, and non-uniform scaling.',symbol:'↗'},{num:'03',title:'Coordinate frames',copy:'Connect homogeneous transforms to robotics and 3D positioning.',symbol:'SE(2)'}]},
+  '/decomposition-lab': {num:'04',eyebrow:'STRUCTURE / DECOMPOSITIONS',title:'Find the structure inside the matrix.',accent:'matrix.',intro:'Explore the factorisations that reveal hidden directions, low-rank structure, and numerically useful representations.',status:'PLANNED MODULE',features:[{num:'01',title:'Eigen directions',copy:'Understand directions that stay on their own line after a transformation.',symbol:'Av=λv'},{num:'02',title:'QR factorisation',copy:'Separate an orthogonal basis from a triangular system.',symbol:'A=QR'},{num:'03',title:'Singular value decomposition',copy:'Inspect how a matrix stretches along its most important directions.',symbol:'A=UΣVᵀ'}]},
+  '/applications': {num:'05',eyebrow:'PRACTICE / APPLICATIONS',title:'The mathematics behind the tools.',accent:'tools.',intro:'Connect linear algebra to the work it powers: machine learning, computer graphics, robotics, and data analysis.',status:'PLANNED MODULE',features:[{num:'01',title:'Machine learning',copy:'Follow the linear algebra in regression, embeddings, and principal component analysis.',symbol:'Xw'},{num:'02',title:'Computer graphics',copy:'Use transforms and coordinate systems to move geometry through a scene.',symbol:'3D'},{num:'03',title:'Robotics',copy:'Relate frames, pose, and motion through homogeneous transformations.',symbol:'Tₐᵦ'}]},
+}
+function Home() {
+  return <><main className="home-main"><section className="home-hero"><div className="home-hero-copy"><Eyebrow>AN INTERACTIVE MATHEMATICS ENVIRONMENT</Eyebrow><h1>Make abstract<br/>ideas <em>visible.</em></h1><p>Explore linear algebra by doing it. Change a matrix, follow its row operations, and see the structure hiding behind the symbols.</p><div className="home-actions"><a className="solid-button big-button" href="/matrix-lab">Enter Matrix Lab <ArrowRight size={17}/></a><a className="text-action" href="/transformations">Explore the concepts <ArrowDownRight size={16}/></a></div><div className="hero-rule"><span>01 / INTERACTIVE LEARNING</span><span>BUILT FOR THE CURIOUS</span></div></div><div className="hero-board"><div className="board-top"><span>FIG. 01 / LINEAR MAP</span><span>R² → R²</span></div><svg viewBox="0 0 500 390" role="img" aria-label="A coordinate grid transformed into a skewed parallelogram"><defs><pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M 24 0 L 0 0 0 24" fill="none" stroke="#202a3a" strokeOpacity=".14" strokeWidth="1"/></pattern></defs><rect width="500" height="390" fill="url(#grid)"/><g stroke="#202a3a" strokeWidth="1" opacity=".4"><path d="M42 195H460 M250 28V360"/><path d="M455 190l8 5-8 5 M245 35l5-8 5 8" fill="none"/></g><g transform="translate(250 195)"><polygon points="0,0 120,-5 170,-110 50,-105" fill="#2558d8" fillOpacity=".13" stroke="#2558d8" strokeWidth="2"/><polygon points="0,0 120,-5 170,-110 50,-105" fill="none" stroke="#2558d8" strokeWidth="1" strokeDasharray="5 5"/><path d="M0 0L120 -5 M0 0L50 -105" stroke="#2558d8" strokeWidth="3"/><path d="M0 0L170 -110" stroke="#e45135" strokeWidth="3"/><circle cx="120" cy="-5" r="5" fill="#2558d8"/><circle cx="50" cy="-105" r="5" fill="#2558d8"/><circle cx="170" cy="-110" r="6" fill="#e45135"/></g><g fill="#202a3a" fontFamily="DM Mono,monospace" fontSize="11"><text x="270" y="178">e₁</text><text x="302" y="86" fill="#e45135">T(v)</text><text x="284" y="344">TRANSFORMATION / 2D</text></g></svg><div className="board-bottom"><span>THE SAME SPACE, A DIFFERENT BASIS</span><span>VECTORa FIELD NOTES № 001</span></div><div className="board-stamp">LINEAR<br/>ALGEBRA<br/><b>01</b></div></div></section><section className="home-intro"><div><Eyebrow>THE WORKBENCH</Eyebrow><h2>Not another wall<br/>of formulas.</h2></div><p>Vectora is built around a simple idea: the best way to understand mathematics is to experiment with it. Each lab gives you a place to change inputs, inspect results, and connect symbols to intuition.</p></section><section className="module-section"><div className="section-topline"><Eyebrow>CHOOSE YOUR EXPLORATION</Eyebrow><span>01 — 05 / MODULES</span></div><div className="module-grid">{routes.slice(1).map((r,i)=><a className={i===0?'module-card module-featured':'module-card'} key={r.href} href={r.href}><div className="module-card-top"><span>{r.number} / MODULE</span><ArrowUpRight size={17}/></div><div className="module-symbol">{['[ A ]','u · v','T(x)','A = QR','Xw'][i]}</div><h3>{r.label}</h3><p>{['Edit matrices, reduce rows, and solve systems with a visible elimination trace.','Explore vector operations, projections, and the geometry of a basis.','See how matrices rotate, reflect, stretch, and shear coordinate space.','Uncover eigen directions, rank, and matrix factorisations.','See linear algebra at work in machine learning, graphics, and robotics.'][i]}</p><span className="module-link">{i===0?'OPEN LAB':'EXPLORE MODULE'} <ArrowRight size={14}/></span></a>)}</div></section><section className="home-method"><div className="method-number">HOW VECTORa WORKS <span>03 PRINCIPLES</span></div><div className="method-row"><span>01</span><div><h3>Change something.</h3><p>Start with an editable mathematical object, not a static example.</p></div><Sigma/></div><div className="method-row"><span>02</span><div><h3>Watch the structure emerge.</h3><p>Follow row operations, pivots, and numerical results one step at a time.</p></div><Grid2X2/></div><div className="method-row"><span>03</span><div><h3>Connect the idea to the world.</h3><p>Move from the mathematics to graphics, data science, and robotics.</p></div><Layers3/></div></section></main></>
+}
+function ConceptPage({ path }: { path: string }) {
+  const page = pageData[path]
+  return <main className="concept-page"><section className="concept-hero"><div className="concept-copy"><Eyebrow>{page.eyebrow}</Eyebrow><div className="concept-number">{page.num} / 05</div><h1>{page.title.replace(page.accent,'')}<em>{page.accent}</em></h1><p>{page.intro}</p><span className="planned-pill"><span/>{page.status}</span></div><div className="concept-art"><div className="art-coordinate-label">VECTORa / STUDY {page.num}</div><div className="concept-formula">{['u·v = |u||v|cos θ','T(x) = Ax','A = QR = UΣVᵀ','y = Xw'][Number(page.num)-2] ?? 'Ax = b'}</div><div className="concept-grid-art"><span/><span/><span/><span/><span/><span/><span/><span/><span/><span/><span/><span/><span/><span/><span/><span/></div><div className="concept-art-bottom">CONCEPTUAL MODEL · NOT TO SCALE</div></div></section><section className="concept-detail"><div className="section-topline"><Eyebrow>INSIDE THIS MODULE</Eyebrow><span>STUDY PLAN / {page.num}</span></div><div className="concept-feature-grid">{page.features.map(item=><article className="concept-feature" key={item.num}><div className="concept-feature-head"><span>{item.num}</span><b>{item.symbol}</b></div><h2>{item.title}</h2><p>{item.copy}</p><span className="planned-text">ON THE ROADMAP</span></article>)}</div><div className="concept-notice"><BookOpen size={19}/><div><strong>This module is being developed.</strong><p>The page and learning outline are in place. Interactive lessons for this topic are planned; Matrix Lab is the first fully interactive learning tool.</p></div><a href="/matrix-lab">Try Matrix Lab <ArrowRight size={15}/></a></div></section></main>
+}
+function NotFound() { return <main className="not-found"><Eyebrow>404 / OFF THE GRID</Eyebrow><h1>This point isn't<br/><em>in the space.</em></h1><p>That page hasn't been mapped yet.</p><a href="/" className="solid-button">Return home <ArrowRight size={16}/></a></main> }
+export default function App() {
+  const path = useRoute()
+  const active = path === '/' ? '/' : path
+  let content
+  if (path === '/') content = <Home/>
+  else if (path === '/matrix-lab') content = <main className="matrix-page"><section className="page-heading"><div><Eyebrow>MATRIX LAB / INTERACTIVE WORKSPACE</Eyebrow><h1>Make the matrix<br/><em>make sense.</em></h1><p>Change entries, explore operations, and follow the elimination steps that turn a system into an answer.</p></div><div className="page-heading-aside"><span>01 / 07</span><strong>THE FIRST WORKING LAB</strong><p>Runs locally in your browser. No sign-in, no uploads, no server round-trip.</p></div></section><MatrixLab/></main>
+  else if (pageData[path]) content = <ConceptPage path={path}/>
+  else content = <NotFound/>
+  return <div className="app-shell"><Header active={active}/>{content}<Footer/></div>
+}
