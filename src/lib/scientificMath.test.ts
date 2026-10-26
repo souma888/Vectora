@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { add, conditionReport, determinant, eigen2, inverse, lu, multiply, pca2, pseudoinverse, qr, solveSystem, svd, vectorProjection } from './scientificMath'
+import { add, conditionReport, determinant, eigen2, inverse, leastSquares, lu, multiply, pca2, pseudoinverse, qr, solveSystem, svd, vectorProjection } from './scientificMath'
 const close=(a:number,b:number,tol=1e-6)=>expect(Math.abs(a-b)).toBeLessThan(tol)
 describe('scientific matrix operations',()=>{
  it('multiplies compatible matrices and rejects dimensions',()=>{expect(multiply([[1,2],[3,4]],[[2],[1]])).toEqual([[4],[10]]);expect(()=>multiply([[1,2]],[[1,2]])).toThrow(/columns\(A\)/)})
@@ -8,7 +8,7 @@ describe('scientific matrix operations',()=>{
  it('produces an LU factorization with pivoting',()=>{const a=[[0,2],[1,3]],{P,L,U}=lu(a);expect(multiply(P,a).map((r,i)=>r.map((x,j)=>x-multiply(L,U)[i][j]))).toEqual([[0,0],[0,0]])})
  it('produces QR factors whose product recovers A',()=>{const a=[[1,1],[1,0],[0,1]],{Q,R}=qr(a),rec=multiply(Q,R);a.forEach((r,i)=>r.forEach((x,j)=>close(rec[i][j],x)))})
  it('computes SVD singular values and pseudoinverse shape',()=>{const a=[[1,0],[0,2],[0,0]],d=svd(a),pinv=pseudoinverse(a);expect(d.singularValues[0]).toBeGreaterThan(d.singularValues[1]);expect(pinv.length).toBe(2);expect(pinv[0].length).toBe(3);expect(conditionReport(a).rank).toBe(2)})
- it('handles diagonal eigenvectors and singular conditioning',()=>{const e=eigen2([[2,0],[0,3]]);expect(e.vectors[0]).toEqual([0,1]);expect(e.vectors[1]).toEqual([1,0]);expect(eigen2([[1,0],[0,1]]).vectors).toEqual([[1,0],[0,1]]);expect(conditionReport([[1,2],[2,4]]).conditionNumber).toBe(Infinity)})
+ it('solves overdetermined systems by least squares',()=>{const fit=leastSquares([[1,0],[1,1],[1,2]],[1,3,5]);close(fit.solution[0],1);close(fit.solution[1],2);close(fit.residualNorm,0);expect(fit.rank).toBe(2)})\n it('handles diagonal eigenvectors and singular conditioning',()=>{const e=eigen2([[2,0],[0,3]]);expect(e.vectors[0]).toEqual([0,1]);expect(e.vectors[1]).toEqual([1,0]);expect(eigen2([[1,0],[0,1]]).vectors).toEqual([[1,0],[0,1]]);expect(conditionReport([[1,2],[2,4]]).conditionNumber).toBe(Infinity)})
  it('computes PCA and vector projection',()=>{expect(pca2([[1,1],[2,2],[3,3]]).explainedVariance[0]).toBeGreaterThan(.99);expect(vectorProjection([3,4],[1,0])).toEqual([3,0])})
  it('adds matrices',()=>expect(add([[1,2]],[[3,4]])).toEqual([[4,6]]))
 })
