@@ -7,7 +7,7 @@ The Scientific Studio is the extended hands-on workbench at `/scientific-studio`
 ### A. Matrix and vector laboratory
 - Editable A and B matrices with row/column resizing (1–5 dimensions per axis).
 - Addition, subtraction, multiplication, transpose, determinant, inverse, RREF, pseudoinverse, rank, and trace.
-- Vector dot product, Euclidean norm, angle, and projection.
+- Vector addition/subtraction, dot product, 3D cross product, Euclidean norm, angle, and projection.
 - Linear system classification: unique solution, infinitely many solutions, or inconsistency.
 - Dimension/precondition errors and a row-operation trace for RREF.
 - Presets for identity, rank-deficient, and pivoting examples.
