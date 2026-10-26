@@ -1,64 +1,84 @@
 # Vectora roadmap
 
-This roadmap describes intended scope, not a claim that every feature is implemented.
+This roadmap tracks the current product scope and distinguishes working demonstrations from future extensions.
 
 ## Product north star
-
 A visual, hands-on workspace where learners can manipulate mathematical objects, inspect the consequences, and connect linear algebra to engineering, machine learning, and graphics.
 
 ## Phase 0 — Foundation
-- [x] Establish React + TypeScript + Vite project
-- [x] Create responsive brand and landing experience
-- [x] Separate major learning areas into dedicated routes
-- [x] Add a first client-side matrix playground
-- [x] Document architecture, principles, and deployment
-- [ ] Complete manual accessibility review
-
-## Phase 1 — Matrix Lab
-- [x] Matrix editor with dimension controls and cell validation
-- [x] Addition, multiplication, transpose, determinant, and inverse
-- [x] Step-by-step row reduction and linear-system classification/solving
-- [ ] Explain domain constraints and numerical limitations
-- [x] Automated regression tests for arithmetic, RREF, and linear systems
-- [ ] Extend numeric edge-case coverage and review tolerances
-
-## Phase 2 — Vectors and transformations
-- [x] Interactive 2D vector operations, dot products, norms, projection, and angle
-- [ ] Interactive 2D coordinate plane with draggable vectors
-- [x] Apply 2×2 transformations to coordinate grids, basis vectors, and shapes
-- [x] Show basis vectors before and after transformation
-- [ ] Explain determinant as signed area scaling
-
-## Phase 3 — Decomposition and numerical methods
-- [x] Real eigenvalues and eigenvectors for 2×2 matrices with numerical readouts
-- [x] QR, SVD/singular values, and least-squares line fitting (educational 2D scope)\n- [ ] LU, pseudoinverse, and general-size decomposition support
-- [ ] Conditioning, stability, residuals, and floating-point error
-- [ ] Compare algorithms and explain when assumptions fail
-
-## Phase 4 — Applications
-- [ ] Linear regression and least squares
-- [ ] PCA and low-rank approximation
-- [ ] 2D/3D graphics and coordinate frames
-- [ ] Robotics transformations and composition
-- [ ] Small, reproducible datasets and guided experiments
-
-## Phase 5 — Learning experience
-- [ ] Guided lessons, worked examples, and practice challenges
-- [ ] Save/share experiments through URL or export
-- [ ] Notebook-style explanations and accessible visualizations
-- [ ] Progressively disclose advanced details without hiding assumptions
-
-## Phase 6 — Backend and release quality
-- [ ] FastAPI + Pydantic service for heavier computations
-- [ ] Reuse the separate Matrix Operations package where appropriate
-- [ ] Stable request/response schemas and API tests
+- [x] React + TypeScript + Vite app and responsive design system
+- [x] Dedicated routes for major learning areas
+- [x] Client-side matrix playground and regression tests
 - [x] CI for tests and production build
-- [ ] Add a dedicated lint rule set and accessibility audit
-- [ ] Performance, keyboard, screen-reader, mobile, and security audits
+- [x] Architecture, deployment, product and contribution docs
 
-## Initial success criteria
-- Landing page communicates the value proposition in seconds.
-- The first interaction works without account creation.
-- Every displayed mathematical result has a clear definition and constraints.
-- The site is responsive, keyboard usable, and deployable to Vercel.
-- Prototype calculations are labelled honestly; production numerical work is validated independently.
+## Phase 1 — Matrix and vector laboratory
+- [x] Editable matrices and row/column dimension controls
+- [x] Addition, subtraction, multiplication, transpose, determinant, inverse, rank and trace
+- [x] RREF with pivot and row-operation trace
+- [x] Unique / infinite / inconsistent linear-system classification
+- [x] Vector dot product, norms, angle and projection
+- [x] Dimension checks and operation-specific error messages
+- [x] Pseudoinverse and example presets
+- [ ] General symbolic algebra and exact rational arithmetic
+
+## Phase 2 — Decomposition and numerical analysis
+- [x] Pivoted LU factorization
+- [x] QR factorization for full-column-rank educational examples
+- [x] SVD / singular values and pseudoinverse
+- [x] Real eigenpairs for 2×2 matrices
+- [x] Numerical rank and condition-number estimate
+- [x] Explain tolerance, residuals, conditioning and floating-point limits
+- [x] Vitest regression tests for numerical routines
+- [ ] Larger, thoroughly benchmarked decomposition algorithms and configurable relative tolerances
+- [ ] Dedicated residual/reconstruction comparison for every factorization
+
+## Phase 3 — Interactive geometric visualization
+- [x] Live 2D matrix transform and transformed shape
+- [x] Rotation, shear, reflection, collapse and identity presets
+- [x] Determinant, area scale and rank diagnostics
+- [x] Explain basis-vector images and orientation
+- [ ] Draggable vector endpoints and 3D WebGL scene
+- [ ] Animated composition of multiple transforms
+
+## Phase 4 — Machine-learning applications
+- [x] Editable two-feature dataset
+- [x] Least-squares line fit with slope, intercept, R² and residual norm
+- [x] Two-feature PCA with covariance, principal directions and explained variance
+- [x] Guided low-rank approximation and dense-layer explanations
+- [ ] CSV upload, missing-value handling and feature standardization
+- [ ] Multi-feature PCA, model comparison and train/test split
+- [ ] Interactive gradient-descent animation
+
+## Phase 5 — Robotics and engineering
+- [x] Planar homogeneous transforms and pose controls
+- [x] Transform composition and local-to-world point mapping
+- [x] Coordinate-frame and composition-order explanations
+- [ ] Full 3D 4×4 transforms and rotation representations
+- [ ] Forward kinematics for a configurable robot arm
+- [ ] Computer-vision camera projection module
+
+## Phase 6 — Learning and reproducibility
+- [x] Guided concept notes with key relations and assumption checks
+- [x] JSON experiment export
+- [x] Numerical API reference and scientific-studio guide
+- [x] Companion Jupyter notebook with reproducible experiments
+- [ ] URL-encoded shareable experiments and import/restore workflow
+- [ ] Practice questions, hints, and progress tracking
+- [ ] Accessible step-by-step math notation and screen-reader review
+
+## Phase 7 — Backend and release quality
+- [x] Dedicated FastAPI + Pydantic service for selected NumPy-backed calculations
+- [x] PCA, regression and 2D affine transform endpoints
+- [x] CORS support for configured production origin and Vercel deployment domains
+- [x] OpenAPI documentation
+- [ ] Add API contract and end-to-end browser tests in CI
+- [ ] Performance, keyboard, screen-reader, mobile, and security audits
+- [ ] Versioned API schemas and request/response examples
+
+## Success criteria
+- A first interaction works without account creation.
+- Every result has a clear definition, preconditions and limitations.
+- Matrix dimensions are validated before computation.
+- Numerical examples can be reproduced and checked against trusted libraries.
+- The app is responsive, keyboard usable, and deployable to Vercel.
