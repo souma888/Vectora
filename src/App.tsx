@@ -17,9 +17,6 @@ const routes = [
   { href: '/decomposition-lab', label: 'Decomposition Lab', number: '04' },
   { href: '/applications', label: 'Applications', number: '05' },
   { href: '/scientific-studio', label: 'Studio', number: '06' },
-  { href: '/about', label: 'About', number: '07' },
-  { href: '/contact', label: 'Contact', number: '08' },
-  { href: '/settings', label: 'Settings', number: '09' },
 ]
 function fmt(n: number) { if (Math.abs(n) < 1e-9) return '0'; return Number.isInteger(n) ? String(n) : Number(n.toFixed(4)).toString() }
 function useRoute() { return typeof window === 'undefined' ? '/' : window.location.pathname.replace(/\/$/, '') || '/' }
