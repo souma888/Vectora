@@ -39,9 +39,9 @@ PCA in this compact module is limited to two features. For real datasets with mi
 
 ### E. Robotics and engineering
 - Interactive SE(2) pose controls: heading, translation, and local point.
-- Homogeneous transform matrices and transform composition.
-- Local-to-world point transformation.
-- Explanation of composition order and extension to 3D 4×4 transforms.
+- A 3D 4×4 homogeneous transform lab with roll, pitch, yaw, translation, and non-uniform scaling controls.
+- 3D local-to-world mapping and inverse round-trip check, plus an isometric point view.
+- Homogeneous transform matrices, composition order, and coordinate-frame conventions.
 
 ### F. Learning and reproducibility
 - Expandable guided concept notes, key relations, and assumption checks.
